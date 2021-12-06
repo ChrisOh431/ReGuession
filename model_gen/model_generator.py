@@ -1,17 +1,25 @@
 import numpy as np
 from sklearn import datasets
-import matplotlib.pyplot as plt  # for plotting
+from random import randint
 
-x, y, coef = datasets.make_regression(n_samples=100,  # number of samples
-                                      n_features=1,  # number of features
-                                      n_informative=1,  # number of useful features
-                                      noise=10,  # bias and standard deviation of the guassian noise
-                                      coef=True,  # true coefficient used to generated the data
-                                      random_state=0)  # set for same data points for each run
 
-x = np.interp(x, (x.min(), x.max()), (0, 40))
+def create_reguession_dataset(noise, count):
+    x, y, coef = datasets.make_regression(n_samples=count,  # number of samples
+                                          n_features=1,  # number of features
+                                          n_informative=1,  # number of useful features
+                                          noise=noise,  # bias and standard deviation of the guassian noise
+                                          coef=True,  # true coefficient used to generated the data
+                                          random_state=5)  # set for same data points for each run
+    x = np.interp(x, (x.min(), x.max()), (0, 100))
+    y = np.interp(y, (y.min(), y.max()), (0, 100))
 
-y = np.interp(y, (y.min(), y.max()), (20000, 150000))
+    x_coords = []
+    y_coords = []
 
-plt.ion()  # interactive plot on
-plt.plot(x, y, '.', label='training data')
+    for x_coord, y_coord in zip(x, y):
+        x_coords.append(x_coord[0])
+        y_coords.append(y_coord)
+
+    return (coef.item(), x_coords, y_coords)
+
+print(create_reguession_dataset(5, 5))
