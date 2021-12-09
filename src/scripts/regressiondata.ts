@@ -10,5 +10,12 @@ export interface Regression<RegressionType> {
     reg_type: RegressionType;
 }
 
+export interface RegressionDataset {
+    x_vals: number[];
+    y_vals: number[];
+    coeff: number;
+    y_int: number;
+}
+
 let regression: Regression<RegressionType.Guess>
 
