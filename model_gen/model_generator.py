@@ -1,3 +1,4 @@
+import json
 import numpy as np
 from sklearn import datasets
 from random import randint
@@ -21,5 +22,21 @@ def create_reguession_dataset(noise, count):
         y_coords.append(y_coord)
 
     return (coef.item(), x_coords, y_coords)
+
+
+def serialize_create_reguession_dataset(dataset, location=""):
+    jsondata = {
+        "x_vals": dataset[1],
+        "y_vals": dataset[2],
+        "coeff": dataset[0],
+        "y_int": 0
+    };
+
+    if location:
+        with open("location", "w") as datasetfile:
+            json.dump(jsondata, datasetfile, indent=4)
+
+    return jsondata
+
 
 print(create_reguession_dataset(5, 5))
