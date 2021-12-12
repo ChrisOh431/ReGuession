@@ -15,13 +15,13 @@ import { Scatter } from "react-chartjs-2";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 
-import { RegressionDataSet, RegressionGuess } from "../scripts/regressiondata";
+import { RegressionDataset, Regression } from "../scripts/regressiondata";
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
 type SortingChartContainerProps = {
-	regression_data: RegressionDataSet;
-    user_guess: RegressionGuess;
+	dataset: RegressionDataset;
+    regressions: Regression[];
 };
 
 const ContainerPaper = styled(Paper)(({ theme }) => ({
@@ -33,8 +33,8 @@ const ContainerPaper = styled(Paper)(({ theme }) => ({
 }));
 
 export const SortingChartContainer = ({
-	chart_data,
-	true_max,
+	dataset,
+	regressions,
 }: SortingChartContainerProps) => {
 	const chart_options: ChartOptions = {
 		maintainAspectRatio: true,
@@ -60,13 +60,10 @@ export const SortingChartContainer = ({
 		},
 	};
 
+	// build chart dataset here, not in an external manner, then take in cues to know what style to display/data to highlight
+
 	return (
 		<ContainerPaper elevation={2} sx={{}}>
-			<Scatter
-				options={chart_options as CoreChartOptions<"bar">}
-				data={chart_data as ChartData<"bar", number[]>}
-				key={chart_data.datasets[0].label? chart_data.datasets[0].label : ind }
-			/>
 		</ContainerPaper>
 	);
 };

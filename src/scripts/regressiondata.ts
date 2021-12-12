@@ -16,6 +16,3 @@ export interface RegressionDataset {
     coeff: number;
     y_int: number;
 }
-
-let regression: Regression<RegressionType.Guess>
-
