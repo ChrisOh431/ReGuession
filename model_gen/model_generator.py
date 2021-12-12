@@ -27,6 +27,7 @@ def create_reguession_dataset(noise, count, randvar):
 def serialize_reguession_datasets(location=""):
     sets = [0, 1, 2, 3, 4, 5]
 
+    outdata = []
     if location:
         with open(location, "w") as datasetfile:
             for randset in sets:
@@ -39,9 +40,10 @@ def serialize_reguession_datasets(location=""):
                     "y_int": 0
                 }
 
-                json.dump(jsondata, datasetfile, indent=4)
-                
-    return jsondata
+                outdata.append(jsondata)
 
+            json.dump(outdata, datasetfile, indent=4)
+        
+    return outdata
 
 serialize_reguession_datasets('./src/reguessiondatasets.json')
