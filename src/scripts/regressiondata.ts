@@ -1,4 +1,4 @@
-enum RegressionType {
+export enum RegressionType {
     AI,
     LeastSqurares,
     Guess

@@ -1,11 +1,12 @@
 import React from "react";
 import {
 	Chart as ChartJS,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Tooltip,
-    Legend,ChartOptions,
+	LinearScale,
+	PointElement,
+	LineElement,
+	Tooltip,
+	Legend,
+	ChartOptions,
 	ChartData,
 	CoreChartOptions,
 } from "chart.js";
@@ -15,13 +16,17 @@ import { Scatter } from "react-chartjs-2";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 
-import { RegressionDataset, Regression } from "../scripts/regressiondata";
+import {
+	RegressionDataset,
+	Regression,
+	RegressionType,
+} from "../scripts/regressiondata";
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
 type SortingChartContainerProps = {
 	dataset: RegressionDataset;
-    regressions: Regression[];
+	regressions: Regression<RegressionType>[];
 };
 
 const ContainerPaper = styled(Paper)(({ theme }) => ({
@@ -32,10 +37,10 @@ const ContainerPaper = styled(Paper)(({ theme }) => ({
 	margin: "0.1rem 0",
 }));
 
-export const SortingChartContainer = ({
+export default function SortingChartContainer({
 	dataset,
 	regressions,
-}: SortingChartContainerProps) => {
+}: SortingChartContainerProps) {
 	const chart_options: ChartOptions = {
 		maintainAspectRatio: true,
 		aspectRatio: 2,
@@ -62,8 +67,5 @@ export const SortingChartContainer = ({
 
 	// build chart dataset here, not in an external manner, then take in cues to know what style to display/data to highlight
 
-	return (
-		<ContainerPaper elevation={2} sx={{}}>
-		</ContainerPaper>
-	);
-};
+	return <ContainerPaper elevation={2} sx={{}}></ContainerPaper>;
+}
