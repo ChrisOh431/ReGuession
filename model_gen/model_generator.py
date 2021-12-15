@@ -11,39 +11,35 @@ def create_reguession_dataset(noise, count, randvar):
                                           noise=noise,  # bias and standard deviation of the guassian noise
                                           coef=True,  # true coefficient used to generated the data
                                           random_state=randvar)  # set for same data points for each run
-    x = np.interp(x, (x.min(), x.max()), (0, 100))
-    y = np.interp(y, (y.min(), y.max()), (0, 100))
+    x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 100))]
+    y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 100))]
 
-    x_coords = []
-    y_coords = []
-
-    for x_coord, y_coord in zip(x, y):
-        x_coords.append(x_coord[0])
-        y_coords.append(y_coord)
-
-    return (coef.item(), x_coords, y_coords)
+    return (coef.item(), 0, x, y)
 
 
-def serialize_reguession_datasets(location=""):
-    sets = [0, 1, 2, 3, 4, 5]
-
+def serialize_reguession_datasets(datasets, location):
     outdata = []
-    if location:
-        with open(location, "w") as datasetfile:
-            for randset in sets:
-                dataset = create_reguession_dataset(5, 10, randset)
+    with open(location, "w") as datasetfile:
+        for dataset in datasets:
+            jsondata = {
+                "x_vals": dataset[2],
+                "y_vals": dataset[3],
+                "coeff": dataset[0],
+                "y_int": dataset[1]
+            }
+            outdata.append(jsondata)
 
-                jsondata = {
-                    "x_vals": dataset[1],
-                    "y_vals": dataset[2],
-                    "coeff": dataset[0],
-                    "y_int": 0
-                }
-
-                outdata.append(jsondata)
-
-            json.dump(outdata, datasetfile, indent=4)
+        json.dump(outdata, datasetfile, indent=4)
         
     return outdata
 
-serialize_reguession_datasets('./src/reguessiondatasets.json')
+seeds = [1, 12, 42, 64, 256]
+exts = [randint(120, 550) for i in range(10)]
+seeds.extend(exts)
+
+outsets = []
+
+for seed in seeds:
+    outsets.append(create_reguession_dataset(5, 10, seed))
+
+serialize_reguession_datasets(outsets, "./src/reguessiondatasets.json")

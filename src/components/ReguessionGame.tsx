@@ -29,13 +29,13 @@ export default function ReguessionGame() {
 		dataset_objects.push(deserialized_data);
 	}
 
-	let history = new Array(dataset_objects.length).fill(() => Math.floor(Math.random()*dataset_objects.length));
+	let history = dataset_objects.map(() => Math.floor(Math.random()*dataset_objects.length))
 
 	const [dataset_history, set_dataset_history] = React.useState<number[]>(history);
 	const [current_dataset, change_dataset] = React.useState<RegressionDataset>(dataset_objects[history[0]]);
 
 	console.log(`Datasets: ${history}\n`);
-	console.log(`Dataset Objects:\n`);
+	console.log(`Datasets Objects:\n`);
 	for (let set of history)
 	{
 		console.log(dataset_objects[set]);	

@@ -11,7 +11,8 @@ export interface Regression<RegressionType> {
 }
 
 export interface RegressionDataset {
-    coords: [number, number]
+    x_vals: number[];
+    y_vals: number[];
     coeff: number;
     y_int: number;
 }

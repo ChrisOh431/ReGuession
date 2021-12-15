@@ -68,7 +68,5 @@ export default function SortingChartContainer({
 }: SortingChartContainerProps) {
 	// build chart dataset here, not in an external manner, then take in cues to know what style to display/data to highlight
 	
-
-
 	return <ContainerPaper elevation={2} sx={{}}></ContainerPaper>;
 }
