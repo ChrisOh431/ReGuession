@@ -6,7 +6,6 @@ import {
 	LineElement,
 	Tooltip,
 	Legend,
-
 	ChartOptions,
 	ChartData,
 	CoreChartOptions,
@@ -27,12 +26,12 @@ ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
 type SortingChartContainerProps = {
 	dataset: RegressionDataset;
-	regressions: Regression<RegressionType>[];
+	regressions?: Regression<RegressionType>[];
 };
 
 const ContainerPaper = styled(Paper)(({ theme }) => ({
 	height: "fit-content",
-	width: "100%",
+	width: "80%",
 	position: "relative",
 	border: `2px solid ${theme.palette.divider}`,
 	margin: "0.1rem 0",
@@ -40,7 +39,7 @@ const ContainerPaper = styled(Paper)(({ theme }) => ({
 
 const chart_options: ChartOptions = {
 	maintainAspectRatio: true,
-	aspectRatio: 2,
+	aspectRatio: 1,
 	animation: false,
 	responsive: true,
 	layout: {
@@ -62,11 +61,64 @@ const chart_options: ChartOptions = {
 	},
 };
 
+interface Colormap {
+	[key: RegressionType]: string 
+}
+
+let colormap: { [key: number]: string } = {};
+colormap[RegressionType.Artif] = "#ff8800";
+colormap[RegressionType.Guess] = "#454bee";
+colormap[RegressionType.Answer] = "#61F416";
+
+function minmax():
+
 export default function SortingChartContainer({
 	dataset,
 	regressions,
 }: SortingChartContainerProps) {
 	// build chart dataset here, not in an external manner, then take in cues to know what style to display/data to highlight
-	
-	return <ContainerPaper elevation={2} sx={{}}></ContainerPaper>;
+	const full_datasets = [];
+	const paired_coords: { x: number; y: number }[] = [];
+
+	for (let i = 0; i < dataset.x_vals.length; i++) {
+		paired_coords.push({ x: dataset.x_vals[i], y: dataset.y_vals[i] });
+	}
+
+	const scatter_set = {
+		type: "scatter" as const,
+		label: "points",
+		data: paired_coords,
+	};
+
+	full_datasets.push(scatter_set);
+
+	// regressions
+	if (regressions) {
+
+		const linear_set = {
+			type: "line" as const,
+			label: "regressions",
+			datasets: []
+		};
+
+		for (const regression of regressions)
+		{
+			let color = colormap[regression.reg_type];
+
+			
+		}
+
+		full_datasets.push(linear_set);
+	}
+
+	const full_set = {
+		labels: ["X"],
+		datasets: full_datasets,
+	};
+
+	return (
+		<ContainerPaper elevation={2} sx={{}}>
+			<Chart type="scatter" data={full_set} options={chart_options} />
+		</ContainerPaper>
+	);
 }

@@ -2,12 +2,15 @@ import React from "react";
 
 import ReguessionChartContainer from "./RegressionChartContainer";
 import regression_datasets from "../reguessiondatasets.json";
-import { RegressionDataset } from "../scripts/regressiondata";
-
+import {
+	Regression,
+	RegressionDataset,
+	RegressionType,
+	test_data
+} from "../scripts/regressiondata";
 
 import { styled } from "@mui/material/styles";
-import { Box, Stack } from "@mui/material";
-
+import { Box, Slider, Stack } from "@mui/material";
 
 const TallStack = styled(Stack)(({ theme }) => ({
 	height: "100%",
@@ -15,33 +18,27 @@ const TallStack = styled(Stack)(({ theme }) => ({
 }));
 
 export default function ReguessionGame() {
-	let dataset_objects: RegressionDataset[] = [];
+	let history = test_data.map(() =>
+		Math.floor(Math.random() * test_data.length)
+	);
 
-	for (let dataset of regression_datasets) {
-		let deserialized_data: RegressionDataset = {
-			x_vals: [],
-			y_vals: [],
-			coeff: 0,
-			y_int: 0,
-		};
+	const [dataset_history, set_dataset_history] =
+		React.useState<number[]>(history);
+	const [current_dataset, change_dataset] = React.useState<RegressionDataset>(
+		test_data[history[0]]
+	);
 
-		Object.assign(deserialized_data, dataset);
-		dataset_objects.push(deserialized_data);
-	}
-
-	let history = dataset_objects.map(() => Math.floor(Math.random()*dataset_objects.length))
-
-	const [dataset_history, set_dataset_history] = React.useState<number[]>(history);
-	const [current_dataset, change_dataset] = React.useState<RegressionDataset>(dataset_objects[history[0]]);
+	const [regression_guess, update_regression_guess] = React.useState<
+		Regression<RegressionType.Guess>
+	>({ reg_type: RegressionType.Guess, slope: 0, y_int: 0 });
 
 	console.log(`Datasets: ${history}\n`);
 	console.log(`Datasets Objects:\n`);
-	for (let set of history)
-	{
-		console.log(dataset_objects[set]);	
+	for (let set of history) {
+		console.log(dataset_objects[set]);
 	}
 
-	let current = dataset_objects[history[0]]; 
+	let current = dataset_objects[history[0]];
 	console.log(`Current Dataset:\n`);
 	console.log(current);
 
@@ -55,9 +52,11 @@ export default function ReguessionGame() {
 				display="flex"
 				justifyContent="center"
 				alignItems={"center"}
-				padding={{ xs: "0.5em", md: "5.8%" }}
+				padding={{ xs: "0.5em", md: "2%" }}
 				width={{ xs: "100%", md: "60%" }}
-			/>
+			>
+				<ReguessionChartContainer dataset={current} regressions={[regression_guess]}/>
+			</Box>
 			<Stack
 				justifyContent={{ xs: "flex-start", md: "flex-end" }}
 				alignItems={"center"}
@@ -71,7 +70,9 @@ export default function ReguessionGame() {
 					width={{ xs: "90%", md: "50%" }}
 					marginTop={{ xs: "2%" }}
 					spacing={{ xs: 2, md: 2 }}
-				></Stack>
+				>
+					<Slider />
+				</Stack>
 			</Stack>
 		</TallStack>
 	);
