@@ -1,5 +1,6 @@
-import * as test_regressions from "../reguessiondatasets.json";
+import _test_regressions from "../reguessiondatasets.json";
 
+const test_regressions: RegressionDataset[] = _test_regressions
 
 export enum RegressionType {
     Artif,
@@ -25,7 +26,7 @@ export interface RegressionDataset {
     y_int: number;
 }
 
-export function deserialize_datasets(sets: { x_vals: number[]; y_vals: number[]; coeff: number; y_int: number; }[]): RegressionDataset[] {
+export function deserialize_datasets(sets: RegressionDataset[]): RegressionDataset[] {
     let dataset_objects: RegressionDataset[] = [];
     console.log(sets);
 
