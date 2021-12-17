@@ -61,16 +61,14 @@ const chart_options: ChartOptions = {
 	},
 };
 
-interface Colormap {
-	[key: RegressionType]: string 
-}
+type Colormap = {
+	[key in RegressionType]: string;
+};
 
 let colormap: { [key: number]: string } = {};
 colormap[RegressionType.Artif] = "#ff8800";
 colormap[RegressionType.Guess] = "#454bee";
 colormap[RegressionType.Answer] = "#61F416";
-
-function minmax():
 
 export default function SortingChartContainer({
 	dataset,
@@ -94,21 +92,20 @@ export default function SortingChartContainer({
 
 	// regressions
 	if (regressions) {
-
-		const linear_set = {
-			type: "line" as const,
-			label: "regressions",
-			datasets: []
-		};
-
 		for (const regression of regressions)
 		{
 			let color = colormap[regression.reg_type];
-
+			let linear_pair: [{ x: number; y: number }, { x: number; y: number }];
+			linear_pair = [{x: 0, y: regression.y_int}, {x: 100, y: (100*regression.slope)+regression.y_int}];
 			
-		}
+			const linear_set = {
+				type: "line" as const,
+				label: "regressions",
+				data: linear_pair
+			};
 
-		full_datasets.push(linear_set);
+			full_datasets.push(linear_set);
+		}
 	}
 
 	const full_set = {

@@ -35,10 +35,10 @@ export default function ReguessionGame() {
 	console.log(`Datasets: ${history}\n`);
 	console.log(`Datasets Objects:\n`);
 	for (let set of history) {
-		console.log(dataset_objects[set]);
+		console.log(test_data[set]);
 	}
 
-	let current = dataset_objects[history[0]];
+	let current = test_data[history[0]];
 	console.log(`Current Dataset:\n`);
 	console.log(current);
 
