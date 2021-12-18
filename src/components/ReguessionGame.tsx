@@ -31,6 +31,10 @@ export default function ReguessionGame() {
 	const [regression_guess, update_regression_guess] = React.useState<
 		Regression<RegressionType.Guess>
 	>({ reg_type: RegressionType.Guess, slope: 0, y_int: 0 });
+	const [regression_answer, update_regression_answer] = React.useState<
+		Regression<RegressionType.Answer>
+	>({ reg_type: RegressionType.Answer, slope: current_dataset.coeff, y_int: current_dataset.y_int });
+
 
 	console.log(`Datasets: ${history}\n`);
 	console.log(`Datasets Objects:\n`);
@@ -55,7 +59,7 @@ export default function ReguessionGame() {
 				padding={{ xs: "0.5em", md: "2%" }}
 				width={{ xs: "100%", md: "60%" }}
 			>
-				<ReguessionChartContainer dataset={current} regressions={[regression_guess]}/>
+				<ReguessionChartContainer dataset={current} regressions={[regression_guess, regression_answer]}/>
 			</Box>
 			<Stack
 				justifyContent={{ xs: "flex-start", md: "flex-end" }}
