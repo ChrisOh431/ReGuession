@@ -6,7 +6,7 @@ import {
 	Regression,
 	RegressionDataset,
 	RegressionType,
-	test_data
+	test_data,
 } from "../scripts/regressiondata";
 
 import { styled } from "@mui/material/styles";
@@ -28,13 +28,20 @@ export default function ReguessionGame() {
 		test_data[history[0]]
 	);
 
+	const [slope_guess, update_slope_guess] = React.useState(0);
+	const [y_int_guess, update_y_int_guess] = React.useState(0);
+
 	const [regression_guess, update_regression_guess] = React.useState<
 		Regression<RegressionType.Guess>
 	>({ reg_type: RegressionType.Guess, slope: 0, y_int: 0 });
+
 	const [regression_answer, update_regression_answer] = React.useState<
 		Regression<RegressionType.Answer>
-	>({ reg_type: RegressionType.Answer, slope: current_dataset.coeff, y_int: current_dataset.y_int });
-
+	>({
+		reg_type: RegressionType.Answer,
+		slope: current_dataset.coeff,
+		y_int: current_dataset.y_int,
+	});
 
 	console.log(`Datasets: ${history}\n`);
 	console.log(`Datasets Objects:\n`);
@@ -59,7 +66,17 @@ export default function ReguessionGame() {
 				padding={{ xs: "0.5em", md: "2%" }}
 				width={{ xs: "100%", md: "60%" }}
 			>
-				<ReguessionChartContainer dataset={current} regressions={[regression_guess, regression_answer]}/>
+				<ReguessionChartContainer
+					dataset={current}
+					regressions={[
+						{
+							reg_type: RegressionType.Guess,
+							slope: slope_guess,
+							y_int: y_int_guess,
+						},
+						regression_answer,
+					]}
+				/>
 			</Box>
 			<Stack
 				justifyContent={{ xs: "flex-start", md: "flex-end" }}
@@ -75,7 +92,8 @@ export default function ReguessionGame() {
 					marginTop={{ xs: "2%" }}
 					spacing={{ xs: 2, md: 2 }}
 				>
-					<Slider />
+					<Slider value={slope_guess}/>
+					<Slider value={y_int_guess}/>
 				</Stack>
 			</Stack>
 		</TallStack>
