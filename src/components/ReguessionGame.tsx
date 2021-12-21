@@ -1,7 +1,8 @@
 import React from "react";
 
 import ReguessionChartContainer from "./RegressionChartContainer";
-import regression_datasets from "../reguessiondatasets.json";
+
+
 import {
 	Regression,
 	RegressionDataset,
@@ -17,11 +18,11 @@ const TallStack = styled(Stack)(({ theme }) => ({
 	backgroundColor: theme.palette.background.default,
 }));
 
-export default function ReguessionGame() {
-	let history = test_data.map(() =>
+let history = test_data.map(() =>
 		Math.floor(Math.random() * test_data.length)
 	);
 
+export default function ReguessionGame() {
 	const [dataset_history, set_dataset_history] =
 		React.useState<number[]>(history);
 	const [current_dataset, change_dataset] = React.useState<RegressionDataset>(
@@ -52,6 +53,16 @@ export default function ReguessionGame() {
 	let current = test_data[history[0]];
 	console.log(`Current Dataset:\n`);
 	console.log(current);
+
+	const changeSlope = (event: Event, newValue: number | number[]) => {
+		update_slope_guess(newValue as number);
+	};
+
+	const changeYInt = (event: Event, newValue: number | number[]) => {
+		update_y_int_guess(newValue as number);
+	};
+	
+	
 
 	return (
 		<TallStack
@@ -92,8 +103,8 @@ export default function ReguessionGame() {
 					marginTop={{ xs: "2%" }}
 					spacing={{ xs: 2, md: 2 }}
 				>
-					<Slider value={slope_guess}/>
-					<Slider value={y_int_guess}/>
+					<Slider value={slope_guess} onChange={changeSlope}/>
+					<Slider value={y_int_guess} onChange={changeYInt}/>
 				</Stack>
 			</Stack>
 		</TallStack>

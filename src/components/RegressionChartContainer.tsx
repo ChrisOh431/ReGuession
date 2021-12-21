@@ -54,9 +54,13 @@ const chart_options: ChartOptions = {
 	scales: {
 		yAxes: {
 			display: false,
+			min: -5,
+			max: 105,
 		},
 		xAxes: {
 			display: false,
+			min: -5,
+			max: 105,
 		},
 	},
 };
@@ -66,9 +70,9 @@ type Colormap = {
 };
 
 let colormap: { [key: number]: string } = {};
-colormap[RegressionType.Artif] = "#ff8800";
-colormap[RegressionType.Guess] = "#454bee";
-colormap[RegressionType.Answer] = "#61F416";
+colormap[RegressionType.Artif] = "#ff880088";
+colormap[RegressionType.Guess] = "#454bee88";
+colormap[RegressionType.Answer] = "#61F41688";
 
 export default function SortingChartContainer({
 	dataset,
@@ -96,7 +100,7 @@ export default function SortingChartContainer({
 		{
 			let color = colormap[regression.reg_type];
 			let linear_pair: [{ x: number; y: number }, { x: number; y: number }];
-			linear_pair = [{x: 0, y: regression.y_int}, {x: 100, y: regression.slope+regression.y_int}];
+			linear_pair = [{x: 0, y: regression.y_int}, {x: 100, y: 100*0.1*regression.slope+regression.y_int}];
 			console.log(linear_pair)
 
 			const linear_set = {
@@ -105,6 +109,8 @@ export default function SortingChartContainer({
 				data: linear_pair,
 				borderColor: color,
 				borderWidth: 5,
+				pointBorderColor: "#FFFFFF00",
+				pointBackgroundColor: "#FFFFFF00"
 			};
 
 			full_datasets.push(linear_set);
