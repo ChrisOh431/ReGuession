@@ -1,3 +1,4 @@
+import { sum } from "mathjs";
 import _test_regressions from "../reguessiondatasets.json";
 
 const test_regressions: RegressionDataset[] = _test_regressions
@@ -20,6 +21,7 @@ export interface EnhancedRegression<RegressionType> extends Regression<Regressio
 }
 
 export interface RegressionDataset {
+    name?: string;
     x_vals: number[];
     y_vals: number[];
     coeff: number;
@@ -30,8 +32,11 @@ export function deserialize_datasets(sets: RegressionDataset[]): RegressionDatas
     let dataset_objects: RegressionDataset[] = [];
     console.log(sets);
 
-    for (let dataset of sets) {
+    for (let index = 0; index < sets.length; index++) {
+        const dataset = sets[index];
+
         let deserialized_data: RegressionDataset = {
+            name: `${index}`,
             x_vals: [],
             y_vals: [],
             coeff: 0,
@@ -39,7 +44,13 @@ export function deserialize_datasets(sets: RegressionDataset[]): RegressionDatas
         };
 
         Object.assign(deserialized_data, dataset);
-        dataset_objects.push(deserialized_data);
+        
+        let updateds = least_squares_calc(deserialized_data.x_vals, deserialized_data.y_vals);
+
+        deserialized_data.coeff = updateds.slope;
+        deserialized_data.y_int = updateds.y_int;
+
+        dataset_objects.push(deserialized_data);    
     }
 
     return dataset_objects
@@ -65,4 +76,20 @@ export function enhance_regression(regression: Regression<RegressionType>): Enha
     let enhanced: EnhancedRegression<RegressionType> = { ...regression, min: enhancements[0], max: enhancements[1] };
 
     return enhanced;
+}
+
+function least_squares_calc(x_vals: number[], y_vals: number[]): {slope: number, y_int: number}
+{
+    let xy: number[] = x_vals.map((value, index) => value*y_vals[index]);
+    let xsq: number[] = x_vals.map((value) => value*value);
+
+    let sum_xy: number = sum(xy);
+    let sum_xsq: number = sum(xsq);
+    let sum_x: number = sum(x_vals);
+    let sum_y: number = sum(y_vals);
+
+    let slope = ((x_vals.length*sum_xy)-(sum_x*sum_y))/((x_vals.length*sum_xsq)-(sum_x)*(sum_x));
+    let y_int = (sum_y-slope*sum_x)/(x_vals.length);
+
+    return {slope, y_int}
 }
