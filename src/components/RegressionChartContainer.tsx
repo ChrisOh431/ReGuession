@@ -100,7 +100,8 @@ export default function SortingChartContainer({
 		{
 			let color = colormap[regression.reg_type];
 			let linear_pair: [{ x: number; y: number }, { x: number; y: number }];
-			linear_pair = [{x: 0, y: regression.y_int}, {x: 100, y: 100*0.1*regression.slope+regression.y_int}];
+			console.log(regression.slope);
+			linear_pair = [{x: 0, y: regression.y_int}, {x: 100, y: 100*regression.slope+regression.y_int}];
 			console.log(linear_pair)
 
 			const linear_set = {

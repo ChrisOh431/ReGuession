@@ -88,7 +88,7 @@ function least_squares_calc(x_vals: number[], y_vals: number[]): {slope: number,
     let sum_x: number = sum(x_vals);
     let sum_y: number = sum(y_vals);
 
-    let slope = ((x_vals.length*sum_xy)-(sum_x*sum_y))/((x_vals.length*sum_xsq)-(sum_x)*(sum_x));
+    let slope = ((x_vals.length*sum_xy)-(sum_x*sum_y))/((x_vals.length*sum_xsq)-((sum_x)*(sum_x)));
     let y_int = (sum_y-slope*sum_x)/(x_vals.length);
 
     return {slope, y_int}

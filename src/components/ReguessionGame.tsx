@@ -30,7 +30,7 @@ export default function ReguessionGame() {
 	);
 
 	const [slope_guess, update_slope_guess] = React.useState(0);
-	const [y_int_guess, update_y_int_guess] = React.useState(0);
+	const [y_int_guess, update_y_int_guess] = React.useState(50);
 
 	const [regression_guess, update_regression_guess] = React.useState<
 		Regression<RegressionType.Guess>
@@ -61,8 +61,6 @@ export default function ReguessionGame() {
 	const changeYInt = (event: Event, newValue: number | number[]) => {
 		update_y_int_guess(newValue as number);
 	};
-	
-	
 
 	return (
 		<TallStack
@@ -96,14 +94,14 @@ export default function ReguessionGame() {
 				spacing={{ xs: 2, md: 2 }}
 			>
 				<Stack
-					direction={"row"}
+					direction={"column"}
 					justifyContent={"center"}
 					alignItems={"center"}
 					width={{ xs: "90%", md: "50%" }}
 					marginTop={{ xs: "2%" }}
 					spacing={{ xs: 2, md: 2 }}
 				>
-					<Slider value={slope_guess} onChange={changeSlope}/>
+					<Slider value={slope_guess} min={-10} max={10} step={0.001} onChange={changeSlope}/>
 					<Slider value={y_int_guess} onChange={changeYInt}/>
 				</Stack>
 			</Stack>
