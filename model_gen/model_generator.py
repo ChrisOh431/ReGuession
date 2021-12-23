@@ -11,8 +11,8 @@ def create_reguession_dataset(noise, count, randvar):
                                           noise=noise,  # bias and standard deviation of the guassian noise
                                           coef=True,  # true coefficient used to generated the data
                                           random_state=randvar)  # set for same data points for each run
-    x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 100))]
-    y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 100))]
+    x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 50))]
+    y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 50))]
 
     # every regression included 0.0 and 100.0
     y_min = min(y)
@@ -28,6 +28,20 @@ def create_reguession_dataset(noise, count, randvar):
     y.remove(y_max)
 
     return (coef.item(), 0, x, y)
+
+def add_y_ints(dataset):
+    # coinflip adding a y int lol
+    addyint = randint(0,1)
+    if (addyint == 0):
+        return
+
+    yint = randint(0, 50)
+
+    dataset[2] = yint
+    
+    # numpy arrays are really nice!
+    dataset[3] += yint
+    return dataset
 
 
 def serialize_reguession_datasets(datasets, location):
@@ -51,6 +65,8 @@ exts = [randint(120, 550) for i in range(10)]
 seeds.extend(exts)
 
 outsets = []
+
+
 
 for seed in seeds:
     outsets.append(create_reguession_dataset(5, 10, seed))
