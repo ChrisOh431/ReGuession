@@ -30,17 +30,17 @@ def create_reguession_dataset(noise, count, randvar):
     return (coef.item(), 0, x, y)
 
 def add_y_ints(dataset):
-    # coinflip adding a y int lol
-    addyint = randint(0,1)
-    if (addyint == 0):
-        return
-
     yint = randint(0, 50)
 
     dataset[2] = yint
     
     # numpy arrays are really nice!
     dataset[3] += yint
+    return dataset
+
+def make_negative(dataset):
+    # numpy arrays save the day again!
+    dataset[3] = np.flip(dataset[3])
     return dataset
 
 
@@ -69,6 +69,18 @@ outsets = []
 
 
 for seed in seeds:
-    outsets.append(create_reguession_dataset(5, 10, seed))
+    dataset = create_reguession_dataset(5, 10, seed)
+    
+    # coinflip adding a y int
+    addyint = randint(0,1)
+    if (addyint == 1):
+        dataset = add_y_ints(dataset)
+
+    # coinflip making the slope negative
+    slope = randint(0,1)
+    if (slope == 1):
+        dataset = make_negative(dataset)
+
+    outsets.append(dataset)
 
 serialize_reguession_datasets(outsets, "./src/reguessiondatasets.json")
