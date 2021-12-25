@@ -32,16 +32,12 @@ def create_reguession_dataset(noise, count, randvar):
 def add_y_ints(dataset):
     yint = randint(0, 50)
 
-    dataset[2] = yint
-    
     # numpy arrays are really nice!
-    dataset[3] += yint
-    return dataset
+    return (dataset[0], yint, dataset[2], np.array(dataset[3])+yint)
 
 def make_negative(dataset):
     # numpy arrays save the day again!
-    dataset[3] = np.flip(dataset[3])
-    return dataset
+    return (dataset[0], dataset[1], dataset[2], np.flip(np.array(dataset[3])))
 
 
 def serialize_reguession_datasets(datasets, location):
@@ -80,6 +76,8 @@ for seed in seeds:
     slope = randint(0,1)
     if (slope == 1):
         dataset = make_negative(dataset)
+
+    dataset = (dataset[0], dataset[1], dataset[2], dataset[3])
 
     outsets.append(dataset)
 
