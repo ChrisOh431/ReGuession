@@ -16,18 +16,16 @@ def create_reguession_dataset(noise, count, randvar):
 
     # every regression included 0.0 and 100.0
     y_min = min(y)
-    y_max = max(y)
-
     x_of_y_min = y.index(y_min)
-    x_of_y_max = y.index(y_max)
-    
     x.pop(x_of_y_min)
-    x.pop(x_of_y_max)
-
     y.remove(y_min)
-    y.remove(y_max)
 
-    return (coef.item(), 0, x, y)
+    y_max = max(y)
+    x_of_y_max = y.index(y_max)
+    x.pop(x_of_y_max)
+    y.remove(y_max)    
+
+    return (coef.item(), 0, np.array(x), np.array(y))
 
 def add_y_ints(dataset):
     yint = randint(0, 50)
@@ -37,7 +35,7 @@ def add_y_ints(dataset):
 
 def make_negative(dataset):
     # numpy arrays save the day again!
-    return (dataset[0], dataset[1], dataset[2], np.flip(np.array(dataset[3])))
+    return (dataset[0], dataset[1], dataset[2], np.flip(dataset[3]))
 
 
 def serialize_reguession_datasets(datasets, location):
@@ -77,7 +75,7 @@ for seed in seeds:
     if (slope == 1):
         dataset = make_negative(dataset)
 
-    dataset = (dataset[0], dataset[1], dataset[2], dataset[3])
+    dataset = (dataset[0], dataset[1], dataset[2].tolist(), dataset[3].tolist())
 
     outsets.append(dataset)
 
