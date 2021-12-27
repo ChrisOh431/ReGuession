@@ -11,16 +11,17 @@ import {
 } from "../scripts/regressiondata";
 
 import { styled } from "@mui/material/styles";
-import { Box, Slider, Stack } from "@mui/material";
+import { Box, Paper, Slider, Stack, Typography } from "@mui/material";
+import { padding } from "@mui/system";
 
 const TallStack = styled(Stack)(({ theme }) => ({
-	height: "100%",
+	height: "100vh",
 	backgroundColor: theme.palette.background.default,
 }));
 
 let history = test_data.map(() =>
-		Math.floor(Math.random() * test_data.length)
-	);
+	Math.floor(Math.random() * test_data.length)
+);
 
 export default function ReguessionGame() {
 	const [dataset_history, set_dataset_history] =
@@ -97,12 +98,29 @@ export default function ReguessionGame() {
 					direction={"column"}
 					justifyContent={"center"}
 					alignItems={"center"}
-					width={{ xs: "90%", md: "50%" }}
+					width={{ xs: "90%", md: "80%" }}
+					height={{ md: "100%" }}
 					marginTop={{ xs: "2%" }}
 					spacing={{ xs: 2, md: 2 }}
 				>
-					<Slider value={slope_guess} min={-10} max={10} step={0.001} onChange={changeSlope}/>
-					<Slider value={y_int_guess} onChange={changeYInt}/>
+					<Paper variant="outlined" sx={{
+						width: "100%",
+						padding: "5%"
+					}}>
+						<Stack
+							direction={"column"}
+							justifyContent={"center"}
+							alignItems={"center"}>
+							<Typography variant="h5">
+								Slope: {Math.round(slope_guess * 10) / 10}
+							</Typography>
+							<Typography variant="h5">
+								Y-Intercept: {y_int_guess}
+							</Typography>
+							<Slider value={slope_guess} min={-10} max={10} step={0.001} onChange={changeSlope} sx={{marginTop:"5%"}} />
+							<Slider value={y_int_guess} onChange={changeYInt} />
+						</Stack>
+					</Paper>
 				</Stack>
 			</Stack>
 		</TallStack>

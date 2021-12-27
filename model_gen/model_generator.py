@@ -1,7 +1,7 @@
 import json
 import numpy as np
 from sklearn import datasets
-from random import randint
+from random import randint, choice
 
 
 def create_reguession_dataset(noise, count, randvar):
@@ -54,25 +54,19 @@ def serialize_reguession_datasets(datasets, location):
         
     return outdata
 
-seeds = [1, 12, 42, 64, 256]
-exts = [randint(120, 550) for i in range(10)]
-seeds.extend(exts)
+seeds = [randint(120, 550) for i in range(20)]
 
 outsets = []
 
-
-
 for seed in seeds:
-    dataset = create_reguession_dataset(5, 10, seed)
+    dataset = create_reguession_dataset(20, 20, seed)
     
-    # coinflip adding a y int
-    addyint = randint(0,1)
-    if (addyint == 1):
+    addyint = randint(1,10)
+    if (addyint >= 3):
         dataset = add_y_ints(dataset)
 
-    # coinflip making the slope negative
     slope = randint(0,1)
-    if (slope == 1):
+    if (slope >= 1):
         dataset = make_negative(dataset)
 
     dataset = (dataset[0], dataset[1], dataset[2].tolist(), dataset[3].tolist())
