@@ -1,4 +1,4 @@
-import { sum } from "mathjs";
+import { sum, square } from "mathjs";
 import _test_regressions from "../reguessiondatasets.json";
 
 const test_regressions: RegressionDataset[] = _test_regressions
@@ -94,7 +94,19 @@ function least_squares_calc(x_vals: number[], y_vals: number[]): {slope: number,
     return {slope, y_int}
 }
 
-function calculate_error(guess: Regression<RegressionType.Guess>, answer: Regression<RegressionType.Answer>)
+function calculate_rsq(dataset: RegressionDataset, regression: Regression<RegressionType>)
 {
-    
+    let y_avg = sum(dataset.y_vals) / dataset.y_vals.length;
+
+    let total_sum_squares = 0;
+    dataset.y_vals.forEach((y_val) => {
+        total_sum_squares += square(y_val - y_avg);
+    });
+
+    let regression_sum_squares = 0;
+    dataset.x_vals.forEach((x_val) => {
+        regression_sum_squares += square((regression.slope * x_val + regression.y_int) - y_avg);
+    });
+
+    return regression_sum_squares / total_sum_squares;
 }
