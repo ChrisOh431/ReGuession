@@ -93,3 +93,8 @@ function least_squares_calc(x_vals: number[], y_vals: number[]): {slope: number,
 
     return {slope, y_int}
 }
+
+function calculate_error(guess: Regression<RegressionType.Guess>, answer: Regression<RegressionType.Answer>)
+{
+    
+}

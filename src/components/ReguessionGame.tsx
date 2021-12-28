@@ -53,7 +53,7 @@ export default function ReguessionGame() {
 
 	let current = test_data[history[0]];
 	console.log(`Current Dataset:\n`);
-	console.log(current);
+	console.log(history[0]);
 
 	const changeSlope = (event: Event, newValue: number | number[]) => {
 		update_slope_guess(newValue as number);
