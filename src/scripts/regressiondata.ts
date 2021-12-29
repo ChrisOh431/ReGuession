@@ -104,9 +104,36 @@ function calculate_rsq(dataset: RegressionDataset, regression: Regression<Regres
     });
 
     let regression_sum_squares = 0;
-    dataset.x_vals.forEach((x_val) => {
-        regression_sum_squares += square((regression.slope * x_val + regression.y_int) - y_avg);
+    dataset.x_vals.forEach((x_val, index) => {
+        regression_sum_squares += square((regression.slope * x_val + regression.y_int) - dataset.y_vals[index]);
     });
 
-    return regression_sum_squares / total_sum_squares;
+    return 1 - (regression_sum_squares / total_sum_squares);
 }
+
+type Regression_Comparison = {
+    reg_a: number,
+    reg_b: number
+}
+export function compare_regressions(dataset: RegressionDataset, reg_a: Regression<RegressionType>, reg_b: Regression<RegressionType>)
+{
+    let a_result = calculate_rsq(dataset, reg_a);
+    let b_result = calculate_rsq(dataset, reg_b);
+    
+    return {reg_a: a_result, reg_b: b_result};
+}
+
+let rsq_test: RegressionDataset = {
+    coeff: 0.75,
+    x_vals: [0, 2, 4],
+    y_vals: [1, 4, 4],
+    y_int: 0,
+}
+
+let rsq_reg_test: Regression<RegressionType.Artif> = {
+    reg_type: RegressionType.Artif,
+    slope: 0.75,
+    y_int: 1.5
+}
+
+console.log("tes reg: "+calculate_rsq(rsq_test, rsq_reg_test));

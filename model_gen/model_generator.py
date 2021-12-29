@@ -54,12 +54,12 @@ def serialize_reguession_datasets(datasets, location):
         
     return outdata
 
-seeds = [randint(120, 550) for i in range(20)]
+seeds = [randint(120, 550) for i in range(3)]
 
 outsets = []
 
 for seed in seeds:
-    dataset = create_reguession_dataset(20, 30, seed)
+    dataset = create_reguession_dataset(2, 30, seed)
     
     addyint = randint(1,10)
     if (addyint >= 3):

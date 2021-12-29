@@ -8,10 +8,11 @@ import {
 	RegressionDataset,
 	RegressionType,
 	test_data,
+	compare_regressions
 } from "../scripts/regressiondata";
 
 import { styled } from "@mui/material/styles";
-import { Box, Paper, Slider, Stack, Typography } from "@mui/material";
+import { Box, Button, Paper, Slider, Stack, Typography } from "@mui/material";
 import { padding } from "@mui/system";
 
 const TallStack = styled(Stack)(({ theme }) => ({
@@ -23,6 +24,17 @@ let history = test_data.map(() =>
 	Math.floor(Math.random() * test_data.length)
 );
 
+
+console.log(`Datasets: ${history}\n`);
+console.log(`Datasets Objects:\n`);
+for (let set of history) {
+	console.log(test_data[set]);
+}
+
+let current = test_data[history[0]];
+console.log(`Current Dataset:\n`);
+console.log(history[0]);
+
 export default function ReguessionGame() {
 	const [dataset_history, set_dataset_history] =
 		React.useState<number[]>(history);
@@ -33,28 +45,6 @@ export default function ReguessionGame() {
 	const [slope_guess, update_slope_guess] = React.useState(0);
 	const [y_int_guess, update_y_int_guess] = React.useState(50);
 
-	const [regression_guess, update_regression_guess] = React.useState<
-		Regression<RegressionType.Guess>
-	>({ reg_type: RegressionType.Guess, slope: 0, y_int: 0 });
-
-	const [regression_answer, update_regression_answer] = React.useState<
-		Regression<RegressionType.Answer>
-	>({
-		reg_type: RegressionType.Answer,
-		slope: current_dataset.coeff,
-		y_int: current_dataset.y_int,
-	});
-
-	console.log(`Datasets: ${history}\n`);
-	console.log(`Datasets Objects:\n`);
-	for (let set of history) {
-		console.log(test_data[set]);
-	}
-
-	let current = test_data[history[0]];
-	console.log(`Current Dataset:\n`);
-	console.log(history[0]);
-
 	const changeSlope = (event: Event, newValue: number | number[]) => {
 		update_slope_guess(newValue as number);
 	};
@@ -62,6 +52,14 @@ export default function ReguessionGame() {
 	const changeYInt = (event: Event, newValue: number | number[]) => {
 		update_y_int_guess(newValue as number);
 	};
+
+	const guessClicked = (reg_a: Regression<RegressionType>, reg_b: Regression<RegressionType>) => {
+		console.log(reg_a);
+		console.log(reg_b);
+		let results = compare_regressions(current_dataset, reg_a, reg_b);
+
+		console.log(results);
+	} 
 
 	return (
 		<TallStack
@@ -84,7 +82,11 @@ export default function ReguessionGame() {
 							slope: slope_guess,
 							y_int: y_int_guess,
 						},
-						regression_answer,
+						{ 
+							reg_type: RegressionType.Answer, 
+							slope: current_dataset.coeff, 
+							y_int: current_dataset.y_int 
+						}
 					]}
 				/>
 			</Box>
@@ -119,6 +121,14 @@ export default function ReguessionGame() {
 							</Typography>
 							<Slider value={slope_guess} min={-10} max={10} step={0.001} onChange={changeSlope} sx={{marginTop:"5%"}} />
 							<Slider value={y_int_guess} onChange={changeYInt} />
+
+							<Button variant="contained" sx={{marginTop: "1em"}} onClick={() => {
+								let regression_guess: Regression<RegressionType.Guess> = { reg_type: RegressionType.Guess, slope: slope_guess, y_int: y_int_guess };
+
+								let regression_answer: Regression<RegressionType.Answer> = { reg_type: RegressionType.Answer, slope: current_dataset.coeff, y_int: current_dataset.y_int };
+
+								guessClicked(regression_answer, regression_guess);
+							}}>Guess!</Button>
 						</Stack>
 					</Paper>
 				</Stack>
