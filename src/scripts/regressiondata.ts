@@ -136,4 +136,7 @@ let rsq_reg_test: Regression<RegressionType.Artif> = {
     y_int: 1.5
 }
 
+
 console.log("tes reg: "+calculate_rsq(rsq_test, rsq_reg_test));
+console.log("tes ls sqr: ");
+console.dir(least_squares_calc(rsq_test.x_vals, rsq_test.y_vals));
