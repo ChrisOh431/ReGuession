@@ -119,10 +119,10 @@ export default function ReguessionGame() {
 							<Typography variant="h5">
 								Y-Intercept: {y_int_guess}
 							</Typography>
-							<Slider value={slope_guess} min={-10} max={10} step={0.001} onChange={changeSlope} sx={{marginTop:"5%"}} />
-							<Slider value={y_int_guess} onChange={changeYInt} />
+							<Slider value={slope_guess} min={-10} max={10} step={0.001} onChange={changeSlope} sx={{marginTop:"24px"}} />
+							<Slider value={y_int_guess} onChange={changeYInt} sx={{marginTop:"12px"}} />
 
-							<Button variant="contained" sx={{marginTop: "1em"}} onClick={() => {
+							<Button variant="contained" sx={{marginTop: "24px"}} onClick={() => {
 								let regression_guess: Regression<RegressionType.Guess> = { reg_type: RegressionType.Guess, slope: slope_guess, y_int: y_int_guess };
 
 								let regression_answer: Regression<RegressionType.Answer> = { reg_type: RegressionType.Answer, slope: current_dataset.coeff, y_int: current_dataset.y_int };
