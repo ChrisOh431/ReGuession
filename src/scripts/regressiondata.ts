@@ -108,7 +108,10 @@ function calculate_rsq(dataset: RegressionDataset, regression: Regression<Regres
         regression_sum_squares += square((regression.slope * x_val + regression.y_int) - dataset.y_vals[index]);
     });
 
-    return 1 - (regression_sum_squares / total_sum_squares);
+    let rsq = 1 - (regression_sum_squares / total_sum_squares);
+    rsq = Math.round(rsq * 100) / 100
+    
+    return rsq;
 }
 
 type Regression_Comparison = {
@@ -124,7 +127,7 @@ export function compare_regressions(dataset: RegressionDataset, reg_a: Regressio
 }
 
 let rsq_test: RegressionDataset = {
-    coeff: 0.75,
+    coeff: 0,
     x_vals: [0, 2, 4],
     y_vals: [1, 4, 4],
     y_int: 0,
@@ -140,3 +143,4 @@ let rsq_reg_test: Regression<RegressionType.Artif> = {
 console.log("tes reg: "+calculate_rsq(rsq_test, rsq_reg_test));
 console.log("tes ls sqr: ");
 console.dir(least_squares_calc(rsq_test.x_vals, rsq_test.y_vals));
+
