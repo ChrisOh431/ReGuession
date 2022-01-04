@@ -2,7 +2,6 @@ import React from "react";
 
 import ReguessionChartContainer from "./RegressionChartContainer";
 
-
 import {
 	Regression,
 	RegressionDataset,
