@@ -1,76 +1,99 @@
 import json
 import numpy as np
 from sklearn import datasets
-from random import randint, choice
+from random import randint, choice, sample
+# rewrite to make dataset gen end to end in py, including correcting answer 
 
+class ReguessionDataset:
+    def __init__(self, x_data, y_data):
+        self.x = x_data
+        self.y = y_data
+        self.slope = 0
+        self.y_int = 0
 
-def create_reguession_dataset(noise, count, randvar):
-    x, y, coef = datasets.make_regression(n_samples=count+2,  # number of samples
-                                          n_features=1,  # number of features
-                                          n_informative=1,  # number of useful features
-                                          noise=noise,  # bias and standard deviation of the guassian noise
-                                          coef=True,  # true coefficient used to generated the data
-                                          random_state=randvar)  # set for same data points for each run
-    x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 50))]
-    y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 50))]
+    @classmethod
+    def from_existing(cls, x_vals, y_vals):
+        return cls(np.array(x_vals), np.array(y_vals))
 
-    # every regression included 0.0 and 100.0
-    y_min = min(y)
-    x_of_y_min = y.index(y_min)
-    x.pop(x_of_y_min)
-    y.remove(y_min)
-
-    y_max = max(y)
-    x_of_y_max = y.index(y_max)
-    x.pop(x_of_y_max)
-    y.remove(y_max)    
-
-    return (coef.item(), 0, np.array(x), np.array(y))
-
-def add_y_ints(dataset):
-    yint = randint(0, 50)
-
-    # numpy arrays are really nice!
-    return (dataset[0], yint, dataset[2], np.array(dataset[3])+yint)
-
-def make_negative(dataset):
-    # numpy arrays save the day again!
-    return (dataset[0], dataset[1], dataset[2], np.flip(dataset[3]))
-
-
-def serialize_reguession_datasets(datasets, location):
-    outdata = []
-    with open(location, "w") as datasetfile:
-        for dataset in datasets:
-            jsondata = {
-                "x_vals": dataset[2],
-                "y_vals": dataset[3],
-                "coeff": dataset[0],
-                "y_int": dataset[1]
-            }
-            outdata.append(jsondata)
-
-        json.dump(outdata, datasetfile, indent=4)
+    @classmethod
+    def generate(cls, samplecount, noise, seed):
+        x, y, coef = datasets.make_regression(n_samples=samplecount+2,  # number of samples
+                                              n_features=1,  # number of features
+                                              n_informative=1,  # number of useful features
+                                              noise=noise,  # bias and standard deviation of the guassian noise
+                                              coef=True,  # true coefficient used to generated the data
+                                              random_state=seed)  # set for same data points for each run
         
-    return outdata
+        x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 50))]
+        y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 50))]
 
-seeds = [randint(120, 550) for i in range(3)]
+        return cls(x, y)
 
-outsets = []
 
-for seed in seeds:
-    dataset = create_reguession_dataset(2, 30, seed)
+    def add_y_int(self):
+        yint = randint(0, 50)
+        self.y += yint
+
+    def make_negative(self):
+        self.y = np.flip(self.y)
+
+    def finalize_reg(self):
+        xy = self.x * self.y
+        xsq = np.square(self.x)
+
+        sum_xy = np.sum(xy)
+        sum_xsq = np.sum(xsq)
+        sum_x = np.sum(self.x)
+        sum_y = np.sum(self.y)
+
+        slope_numer = ((len(self.x)*sum_xy) - (sum_x*sum_y))
+        slope_denom = ((len(self.x)*sum_xsq)-((sum_x)*(sum_x)))
+        
+        slope = slope_numer/slope_denom
+        y_int = (sum_y-slope*sum_x)/(len(self.x))
+        
+        self.slope = slope
+        self.y_int = y_int
+
+    # returns a JSON string with properly calculated regressions
+
+test_dataset = ReguessionDataset([0, 2, 4], [1, 4, 4])
+test_dataset.make_negative()
+test_dataset.finalize_reg()
+
+print(test_dataset.slope, test_dataset.y_int)
+
+class RegressionManager():
+    def __init__(self, setcount):
+        self.datasets = []
+
+        for i in range(setcount):
+            new_set = ReguessionDataset.generate(10, 0, randint(0, 20))
+
+            # coinflips to keep data interesting
+            if (choice([True, False])):
+                test_dataset.make_negative()
+
+            if (choice([True, False])):
+                test_dataset.add_y_int()            
+            self.datasets.append(new_set)
+
+    def write(self, location):
+        outdata = []
+        with open(location, "w") as datasetfile:
+            for dataset in self.datasets:
+                dataset.finalize_reg()
+
+                jsondata = {
+                    "x_vals": dataset.x,
+                    "y_vals": dataset.y,
+                    "coeff": dataset.slope,
+                    "y_int": dataset.y_int
+                }
+
+                outdata.append(jsondata)
+
+            json.dump(outdata, datasetfile, indent=4)
     
-    addyint = randint(1,10)
-    if (addyint >= 3):
-        dataset = add_y_ints(dataset)
-
-    slope = randint(0,1)
-    if (slope >= 1):
-        dataset = make_negative(dataset)
-
-    dataset = (dataset[0], dataset[1], dataset[2].tolist(), dataset[3].tolist())
-
-    outsets.append(dataset)
-
-serialize_reguession_datasets(outsets, "./src/reguessiondatasets.json")
+manager = RegressionManager(3)
+manager.write("../src/reguessiondatasets.json")

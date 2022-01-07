@@ -109,8 +109,7 @@ function calculate_rsq(dataset: RegressionDataset, regression: Regression<Regres
     });
 
     let rsq = 1 - (regression_sum_squares / total_sum_squares);
-    rsq = Math.round(rsq * 100) / 100
-    
+    rsq = Math.round(rsq * 100) / 100;
     return rsq;
 }
 
