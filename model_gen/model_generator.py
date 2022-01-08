@@ -32,12 +32,15 @@ class ReguessionDataset:
 
     def add_y_int(self):
         yint = randint(0, 50)
-        self.y += yint
+        self.y += np.array(self.y)+yint
 
     def make_negative(self):
         self.y = np.flip(self.y)
 
     def finalize_reg(self):
+        self.x = np.array(self.x)
+        self.y = np.array(self.y)
+
         xy = self.x * self.y
         xsq = np.square(self.x)
 
@@ -64,18 +67,20 @@ test_dataset.finalize_reg()
 print(test_dataset.slope, test_dataset.y_int)
 
 class RegressionManager():
-    def __init__(self, setcount):
+    def __init__(self, setcount, samplesize, noise):
         self.datasets = []
+        self.seeds = range(setcount)
 
         for i in range(setcount):
-            new_set = ReguessionDataset.generate(10, 0, randint(0, 20))
+            new_set = ReguessionDataset.generate(samplesize, noise, i)
 
             # coinflips to keep data interesting
-            if (choice([True, False])):
-                test_dataset.make_negative()
+            if (choice([True, True, True, False])):
+                new_set.make_negative()
 
-            if (choice([True, False])):
-                test_dataset.add_y_int()            
+            if (choice([True, True, False])):
+                new_set.add_y_int()            
+
             self.datasets.append(new_set)
 
     def write(self, location):
@@ -85,8 +90,8 @@ class RegressionManager():
                 dataset.finalize_reg()
 
                 jsondata = {
-                    "x_vals": dataset.x,
-                    "y_vals": dataset.y,
+                    "x_vals": dataset.x.tolist(),
+                    "y_vals": dataset.y.tolist(),
                     "coeff": dataset.slope,
                     "y_int": dataset.y_int
                 }
@@ -95,5 +100,5 @@ class RegressionManager():
 
             json.dump(outdata, datasetfile, indent=4)
     
-manager = RegressionManager(3)
+manager = RegressionManager(10, 20, .25)
 manager.write("../src/reguessiondatasets.json")
