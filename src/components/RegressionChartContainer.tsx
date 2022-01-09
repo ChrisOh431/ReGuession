@@ -70,7 +70,6 @@ type Colormap = {
 };
 
 let colormap: { [key: number]: string } = {};
-colormap[RegressionType.Artif] = "#ff880088";
 colormap[RegressionType.Guess] = "#454bee88";
 colormap[RegressionType.Answer] = "#61F41688";
 

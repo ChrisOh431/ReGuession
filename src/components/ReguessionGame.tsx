@@ -10,6 +10,8 @@ import {
 	compare_regressions
 } from "../scripts/regressiondata";
 
+import regressions from "../reguessiondatasets.json";
+
 import { styled } from "@mui/material/styles";
 import { Box, Button, Paper, Slider, Stack, Typography } from "@mui/material";
 import { padding } from "@mui/system";

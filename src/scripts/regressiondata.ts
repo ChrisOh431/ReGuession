@@ -1,10 +1,9 @@
 import { sum, square } from "mathjs";
-import _test_regressions from "../reguessiondatasets.json";
+import regressions from "../reguessiondatasets.json";
 
-const test_regressions: RegressionDataset[] = _test_regressions
+const test_regressions: RegressionDataset[] = regressions
 
 export enum RegressionType {
-    Artif,
     Answer,
     Guess
 }
@@ -132,8 +131,8 @@ let rsq_test: RegressionDataset = {
     y_int: 0,
 }
 
-let rsq_reg_test: Regression<RegressionType.Artif> = {
-    reg_type: RegressionType.Artif,
+let rsq_reg_test: Regression<RegressionType.Answer> = {
+    reg_type: RegressionType.Answer,
     slope: 0.75,
     y_int: 1.5
 }

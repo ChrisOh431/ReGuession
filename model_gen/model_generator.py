@@ -100,5 +100,5 @@ class RegressionManager():
 
             json.dump(outdata, datasetfile, indent=4)
     
-manager = RegressionManager(10, 20, .25)
+manager = RegressionManager(10, 20, 0)
 manager.write("../src/reguessiondatasets.json")
