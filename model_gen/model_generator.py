@@ -23,13 +23,15 @@ class ReguessionDataset:
                                               n_informative=1,  # number of useful features
                                               noise=noise,  # bias and standard deviation of the guassian noise
                                               bias= 0,
-                                              random_state=seed
+                                              random_state=seed,
                                               coef=True,  # true coefficient used to generated the data
                                               )  # set for same data points for each run
         
-        x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 50))]
-        y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 50))]
+        x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 100))]
+        y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 100))]
 
+         
+        
         return cls(x, y)
 
 
@@ -38,7 +40,8 @@ class ReguessionDataset:
         self.y += np.array(self.y)+yint
 
     def make_negative(self):
-        self.y = np.flip(self.y)
+        self.y = [y_coord for y_coord in np.interp(self.y, (min(self.y), max(self.y)), (100, 0))]
+        #self.x = np.flip(self.x)
 
     def finalize_reg(self):
         self.x = np.array(self.x)
@@ -60,6 +63,18 @@ class ReguessionDataset:
         
         self.slope = slope
         self.y_int = y_int
+
+    def remove_extr(self):
+        # every regression included 0.0 and 100.0
+        y_min = min(self.y)
+        x_of_y_min = self.y.index(y_min)
+        self.x.pop(x_of_y_min)
+        self.y.remove(y_min)
+    
+        y_max = max(self.y)
+        x_of_y_max = self.y.index(y_max)
+        self.x.pop(x_of_y_max)
+        self.y.remove(y_max)   
 
     # returns a JSON string with properly calculated regressions
 
@@ -107,15 +122,14 @@ manager = RegressionManager(10, 80, 0)
 manager.write("../src/reguessiondatasets.json")
 
 # gen testing, for dataset conformity
-"""
-fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2)
 
-plots = [ax1, ax2, ax3, ax4]
+fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(3,3)
 
-for ind, plot in enumerate(manager.datasets[:4]):
-    plots[ind].plot(plot.x, plot.y)
+plots = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]
+
+for ind, plot in enumerate(manager.datasets[:9]):
+    plots[ind].plot(plot.x, plot.y, '*')
 
 for ax in fig.get_axes():
     ax.label_outer()
 plt.show()
-"""
