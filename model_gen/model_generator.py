@@ -1,7 +1,8 @@
 import json
 import numpy as np
 from sklearn import datasets
-from random import randint, choice, sample
+from random import randint, choice, random, sample
+import matplotlib.pyplot as plt
 # rewrite to make dataset gen end to end in py, including correcting answer 
 
 class ReguessionDataset:
@@ -21,8 +22,10 @@ class ReguessionDataset:
                                               n_features=1,  # number of features
                                               n_informative=1,  # number of useful features
                                               noise=noise,  # bias and standard deviation of the guassian noise
+                                              bias= 0,
+                                              random_state=seed
                                               coef=True,  # true coefficient used to generated the data
-                                              random_state=seed)  # set for same data points for each run
+                                              )  # set for same data points for each run
         
         x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 50))]
         y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 50))]
@@ -64,7 +67,7 @@ test_dataset = ReguessionDataset([0, 2, 4], [1, 4, 4])
 test_dataset.make_negative()
 test_dataset.finalize_reg()
 
-print(test_dataset.slope, test_dataset.y_int)
+print("test results: ", test_dataset.slope, test_dataset.y_int)
 
 class RegressionManager():
     def __init__(self, setcount, samplesize, noise):
@@ -100,5 +103,19 @@ class RegressionManager():
 
             json.dump(outdata, datasetfile, indent=4)
     
-manager = RegressionManager(10, 20, 0)
+manager = RegressionManager(10, 80, 0)
 manager.write("../src/reguessiondatasets.json")
+
+# gen testing, for dataset conformity
+"""
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2)
+
+plots = [ax1, ax2, ax3, ax4]
+
+for ind, plot in enumerate(manager.datasets[:4]):
+    plots[ind].plot(plot.x, plot.y)
+
+for ax in fig.get_axes():
+    ax.label_outer()
+plt.show()
+"""
