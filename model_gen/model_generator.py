@@ -18,30 +18,24 @@ class ReguessionDataset:
 
     @classmethod
     def generate(cls, samplecount, noise, seed):
-        x, y, coef = datasets.make_regression(n_samples=samplecount+2,  # number of samples
+        x, y = datasets.make_regression(n_samples=samplecount+2,  # number of samples
                                               n_features=1,  # number of features
                                               n_informative=1,  # number of useful features
                                               noise=noise,  # bias and standard deviation of the guassian noise
-                                              bias= 0,
-                                              random_state=seed,
-                                              coef=True,  # true coefficient used to generated the data
-                                              )  # set for same data points for each run
+                                              random_state=9+seed)
         
         x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 100))]
         y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 100))]
 
-         
-        
         return cls(x, y)
 
 
     def add_y_int(self):
         yint = randint(0, 50)
-        self.y += np.array(self.y)+yint
+        #self.y += np.array(self.y)+yint
 
     def make_negative(self):
         self.y = [y_coord for y_coord in np.interp(self.y, (min(self.y), max(self.y)), (100, 0))]
-        #self.x = np.flip(self.x)
 
     def finalize_reg(self):
         self.x = np.array(self.x)
@@ -76,13 +70,13 @@ class ReguessionDataset:
         self.x.pop(x_of_y_max)
         self.y.remove(y_max)   
 
-    # returns a JSON string with properly calculated regressions
-
+"""
 test_dataset = ReguessionDataset([0, 2, 4], [1, 4, 4])
 test_dataset.make_negative()
 test_dataset.finalize_reg()
 
 print("test results: ", test_dataset.slope, test_dataset.y_int)
+"""
 
 class RegressionManager():
     def __init__(self, setcount, samplesize, noise):
@@ -93,11 +87,14 @@ class RegressionManager():
             new_set = ReguessionDataset.generate(samplesize, noise, i)
 
             # coinflips to keep data interesting
-            if (choice([True, True, True, False])):
-                new_set.make_negative()
 
             if (choice([True, True, False])):
-                new_set.add_y_int()            
+                new_set.add_y_int()
+
+            if (choice([True, False])):
+                new_set.make_negative()
+
+            
 
             self.datasets.append(new_set)
 
@@ -118,18 +115,24 @@ class RegressionManager():
 
             json.dump(outdata, datasetfile, indent=4)
     
-manager = RegressionManager(10, 80, 0)
+manager = RegressionManager(25, 80, randint(30,55))
 manager.write("../src/reguessiondatasets.json")
 
 # gen testing, for dataset conformity
 
-fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(3,3)
+"""
+plotcntwidth = 5
+fig, plotobjs = plt.subplots(plotcntwidth,plotcntwidth)
 
-plots = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]
+plots = []
+for col in plotobjs:
+    for row in col:
+        plots.append(row)
 
-for ind, plot in enumerate(manager.datasets[:9]):
+for ind, plot in enumerate(manager.datasets[:plotcntwidth*plotcntwidth]):
     plots[ind].plot(plot.x, plot.y, '*')
 
 for ax in fig.get_axes():
     ax.label_outer()
 plt.show()
+"""
