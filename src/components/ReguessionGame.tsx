@@ -7,7 +7,8 @@ import {
 	RegressionDataset,
 	RegressionType,
 	test_data,
-	compare_regressions
+	compare_regressions,
+	RegressionComparison
 } from "../scripts/regressiondata";
 
 import regressions from "../reguessiondatasets.json";
@@ -15,6 +16,8 @@ import regressions from "../reguessiondatasets.json";
 import { styled } from "@mui/material/styles";
 import { Box, Button, Paper, Slider, Stack, Typography } from "@mui/material";
 import { padding } from "@mui/system";
+import SidePanel from "./SIdePanel";
+import { compare } from "mathjs";
 
 const TallStack = styled(Stack)(({ theme }) => ({
 	height: "100vh",
@@ -43,8 +46,14 @@ export default function ReguessionGame() {
 		test_data[history[0]]
 	);
 
+	let answer_reg: Regression<RegressionType.Answer> = { reg_type: RegressionType.Answer, slope: current_dataset.coeff, y_int: current_dataset.y_int }
+
 	const [slope_guess, update_slope_guess] = React.useState(0);
 	const [y_int_guess, update_y_int_guess] = React.useState(50);
+
+	const [results_panel_vis, toggle_results_panel] = React.useState(false);
+
+	const [results, update_results] = React.useState<RegressionComparison>(compare_regressions(current_dataset, { reg_type: RegressionType.Guess, slope: slope_guess, y_int: y_int_guess }, answer_reg));
 
 	const changeSlope = (event: Event, newValue: number | number[]) => {
 		update_slope_guess(newValue as number);
@@ -55,85 +64,93 @@ export default function ReguessionGame() {
 	};
 
 	const guessClicked = (reg_a: Regression<RegressionType>, reg_b: Regression<RegressionType>) => {
-		console.log(reg_a);
-		console.log(reg_b);
 		let results = compare_regressions(current_dataset, reg_a, reg_b);
 
-		console.log(results);
-	} 
+		console.dir(results);
+		update_results(results)
+
+		toggle_results_panel(true);
+	}
+
+	const nextClicked = () => {
+		toggle_results_panel(false)
+	}
+
+	const resetClicked = () => {
+		update_slope_guess(0)
+		update_y_int_guess(0)
+	}
 
 	return (
-		<TallStack
-			direction={{ xs: "column", md: "row" }}
-			alignContent="flex-start"
-			spacing={{ xs: 0, md: 0 }}
-		>
-			<Box
-				display="flex"
-				justifyContent="center"
-				alignItems={"center"}
-				padding={{ xs: "0.5em", md: "2%" }}
-				width={{ xs: "100%", md: "60%" }}
+		<>
+			<TallStack
+				direction={{ xs: "column", md: "row" }}
+				alignContent="flex-start"
+				spacing={{ xs: 0, md: 0 }}
 			>
-				<ReguessionChartContainer
-					dataset={current}
-					regressions={[
-						{
-							reg_type: RegressionType.Guess,
-							slope: slope_guess,
-							y_int: y_int_guess,
-						},
-						{ 
-							reg_type: RegressionType.Answer, 
-							slope: current_dataset.coeff, 
-							y_int: current_dataset.y_int 
-						}
-					]}
-				/>
-			</Box>
-			<Stack
-				justifyContent={{ xs: "flex-start", md: "flex-end" }}
-				alignItems={"center"}
-				width={{ xs: "100%", md: "40%" }}
-				spacing={{ xs: 2, md: 2 }}
-			>
-				<Stack
-					direction={"column"}
-					justifyContent={"center"}
+				<Box
+					display="flex"
+					flexDirection={"column"}
+					justifyContent="center"
 					alignItems={"center"}
-					width={{ xs: "90%", md: "80%" }}
-					height={{ md: "100%" }}
-					marginTop={{ xs: "2%" }}
+					padding={{ xs: "0.5em", md: "2%" }}
+					width={{ xs: "100%", md: "60%" }}
+				>
+					<Paper sx={{
+						width: "25%",
+						marginBottom: "0.6em"
+					}}>
+						<Box
+							padding={"0.7em"}
+						>
+							swag
+						</Box>
+					</Paper>
+					<ReguessionChartContainer
+						dataset={current}
+						regressions={[
+							{
+								reg_type: RegressionType.Guess,
+								slope: slope_guess,
+								y_int: y_int_guess,
+							},
+							{
+								reg_type: RegressionType.Answer,
+								slope: current_dataset.coeff,
+								y_int: current_dataset.y_int
+							}
+						]}
+					/>
+				</Box>
+				<Stack
+					justifyContent={{ xs: "flex-start", md: "flex-end" }}
+					alignItems={"center"}
+					width={{ xs: "100%", md: "40%" }}
 					spacing={{ xs: 2, md: 2 }}
 				>
-					<Paper variant="outlined" sx={{
-						width: "100%",
-						padding: "5%"
-					}}>
-						<Stack
-							direction={"column"}
-							justifyContent={"center"}
-							alignItems={"center"}>
-							<Typography variant="h5">
-								Slope: {Math.round(slope_guess * 10) / 10}
-							</Typography>
-							<Typography variant="h5">
-								Y-Intercept: {y_int_guess}
-							</Typography>
-							<Slider value={slope_guess} min={-10} max={10} step={0.001} onChange={changeSlope} sx={{marginTop:"24px"}} />
-							<Slider value={y_int_guess} onChange={changeYInt} sx={{marginTop:"12px"}} />
-
-							<Button variant="contained" sx={{marginTop: "24px"}} onClick={() => {
-								let regression_guess: Regression<RegressionType.Guess> = { reg_type: RegressionType.Guess, slope: slope_guess, y_int: y_int_guess };
-
-								let regression_answer: Regression<RegressionType.Answer> = { reg_type: RegressionType.Answer, slope: current_dataset.coeff, y_int: current_dataset.y_int };
-
-								guessClicked(regression_answer, regression_guess);
-							}}>Guess!</Button>
-						</Stack>
-					</Paper>
+					<Stack
+						direction={"column"}
+						justifyContent={"center"}
+						alignItems={"center"}
+						width={{ xs: "90%", md: "80%" }}
+						height={{ md: "100%" }}
+						marginTop={{ xs: "2%" }}
+						spacing={{ xs: 2, md: 2 }}
+					>
+						<SidePanel
+							answer={answer_reg}
+							guess={{ reg_type: RegressionType.Guess, slope: slope_guess, y_int: y_int_guess }}
+							results={results}
+							results_panel_vis={results_panel_vis}
+							guessClicked={guessClicked}
+							change_guess_slope={changeSlope}
+							change_guess_yint={changeYInt}
+							reset_clicked={resetClicked}
+							next_clicked={() => { }}
+						/>
+					</Stack>
 				</Stack>
-			</Stack>
-		</TallStack>
+			</TallStack>
+		</>
 	);
 }
