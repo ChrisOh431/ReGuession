@@ -1,4 +1,4 @@
-import { sum, square } from "mathjs";
+import { sum, square, round } from "mathjs";
 import regressions from "../reguessiondatasets.json";
 
 const test_regressions: RegressionDataset[] = regressions
@@ -44,11 +44,13 @@ export function deserialize_datasets(sets: RegressionDataset[]): RegressionDatas
 
         Object.assign(deserialized_data, dataset);
         
+        /*
         let updateds = least_squares_calc(deserialized_data.x_vals, deserialized_data.y_vals);
 
         deserialized_data.coeff = updateds.slope;
         deserialized_data.y_int = updateds.y_int;
-
+        */
+       
         dataset_objects.push(deserialized_data);    
     }
 
@@ -112,16 +114,19 @@ function calculate_rsq(dataset: RegressionDataset, regression: Regression<Regres
     return rsq;
 }
 
-type Regression_Comparison = {
-    reg_a: number,
-    reg_b: number
+export type RegressionComparison = {
+    dataset: RegressionDataset,
+    reg_a: Regression<RegressionType>,
+    reg_b: Regression<RegressionType>,
+    rsq_reg_a: number,
+    rsq_reg_b: number,
 }
-export function compare_regressions(dataset: RegressionDataset, reg_a: Regression<RegressionType>, reg_b: Regression<RegressionType>)
+export function compare_regressions(dataset: RegressionDataset, reg_a: Regression<RegressionType>, reg_b: Regression<RegressionType>): RegressionComparison
 {
-    let a_result = calculate_rsq(dataset, reg_a);
-    let b_result = calculate_rsq(dataset, reg_b);
+    let a_result = round(calculate_rsq(dataset, reg_a), 2);
+    let b_result = round(calculate_rsq(dataset, reg_b), 2);
     
-    return {reg_a: a_result, reg_b: b_result};
+    return {dataset: dataset, reg_a: reg_a, reg_b: reg_b, rsq_reg_a: a_result, rsq_reg_b: b_result};
 }
 
 let rsq_test: RegressionDataset = {

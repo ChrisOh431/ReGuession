@@ -24,18 +24,18 @@ class ReguessionDataset:
                                               noise=noise,  # bias and standard deviation of the guassian noise
                                               random_state=9+seed)
         
-        x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 100))]
-        y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 100))]
+        x = [x_coord[0] for x_coord in np.interp(x, (x.min(), x.max()), (0, 50))]
+        y = [y_coord for y_coord in np.interp(y, (y.min(), y.max()), (0, 50))]
 
         return cls(x, y)
 
 
     def add_y_int(self):
         yint = randint(0, 50)
-        #self.y += np.array(self.y)+yint
+        self.y += np.array(self.y)+yint
 
     def make_negative(self):
-        self.y = [y_coord for y_coord in np.interp(self.y, (min(self.y), max(self.y)), (100, 0))]
+        self.y = [y_coord for y_coord in np.interp(self.y, (min(self.y), max(self.y)), (50, 0))]
 
     def finalize_reg(self):
         self.x = np.array(self.x)
@@ -88,13 +88,11 @@ class RegressionManager():
 
             # coinflips to keep data interesting
 
-            if (choice([True, True, False])):
+            if (choice([True, True])):
                 new_set.add_y_int()
 
             if (choice([True, False])):
                 new_set.make_negative()
-
-            
 
             self.datasets.append(new_set)
 
@@ -107,8 +105,8 @@ class RegressionManager():
                 jsondata = {
                     "x_vals": dataset.x.tolist(),
                     "y_vals": dataset.y.tolist(),
-                    "coeff": dataset.slope,
-                    "y_int": dataset.y_int
+                    "coeff": round(dataset.slope, 2),
+                    "y_int": round(dataset.y_int, 2)
                 }
 
                 outdata.append(jsondata)
