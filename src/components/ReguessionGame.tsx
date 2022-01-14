@@ -1,12 +1,12 @@
 import React from "react";
 
-import ReguessionChartContainer from "./RegressionChartContainer";
+import ReguessionChartContainer, { ContainerPaper } from "./RegressionChartContainer";
 
 import {
 	Regression,
 	RegressionDataset,
 	RegressionType,
-	test_data,
+	test_data as generated_datasets,
 	compare_regressions,
 	RegressionComparison
 } from "../scripts/regressiondata";
@@ -15,35 +15,26 @@ import regressions from "../reguessiondatasets.json";
 
 import { styled } from "@mui/material/styles";
 import { Box, Button, Paper, Slider, Stack, Typography } from "@mui/material";
-import { padding } from "@mui/system";
+import { padding, textAlign } from "@mui/system";
 import SidePanel from "./SIdePanel";
-import { compare } from "mathjs";
+import { compare, round } from "mathjs";
 
 const TallStack = styled(Stack)(({ theme }) => ({
 	height: "100vh",
 	backgroundColor: theme.palette.background.default,
 }));
 
-let history = test_data.map(() =>
-	Math.floor(Math.random() * test_data.length)
+let history = generated_datasets.map(() =>
+	Math.floor(Math.random() * generated_datasets.length)
 );
-
-
-console.log(`Datasets: ${history}\n`);
-console.log(`Datasets Objects:\n`);
-for (let set of history) {
-	console.log(test_data[set]);
-}
-
-let current = test_data[history[0]];
-console.log(`Current Dataset:\n`);
-console.log(history[0]);
 
 export default function ReguessionGame() {
 	const [dataset_history, set_dataset_history] =
 		React.useState<number[]>(history);
+
+	const [current_dataset_ind, set_current_dataset_ind] = React.useState<number>(0);
 	const [current_dataset, change_dataset] = React.useState<RegressionDataset>(
-		test_data[history[0]]
+		generated_datasets[history[current_dataset_ind]]
 	);
 
 	let answer_reg: Regression<RegressionType.Answer> = { reg_type: RegressionType.Answer, slope: current_dataset.coeff, y_int: current_dataset.y_int }
@@ -55,6 +46,8 @@ export default function ReguessionGame() {
 
 	const [results, update_results] = React.useState<RegressionComparison>(compare_regressions(current_dataset, { reg_type: RegressionType.Guess, slope: slope_guess, y_int: y_int_guess }, answer_reg));
 
+	const [score, changescore] = React.useState("00000");
+
 	const changeSlope = (event: Event, newValue: number | number[]) => {
 		update_slope_guess(newValue as number);
 	};
@@ -63,23 +56,44 @@ export default function ReguessionGame() {
 		update_y_int_guess(newValue as number);
 	};
 
+	const addToScore = (amount: number) => {
+		const currentAmount = parseInt(score);
+		const newAmount = `${currentAmount + amount}`.padStart(5, '0');
+
+		changescore(newAmount);
+	}
+
 	const guessClicked = (reg_a: Regression<RegressionType>, reg_b: Regression<RegressionType>) => {
-		let results = compare_regressions(current_dataset, reg_a, reg_b);
+		const results = compare_regressions(current_dataset, reg_a, reg_b);
 
 		console.dir(results);
-		update_results(results)
+		
+		const addamount = round((results.rsq_reg_a / results.rsq_reg_b)*1000);
+		console.log(`Adding ${addamount} `);
+		
+		addToScore(addamount);
+		update_results(results);
 
 		toggle_results_panel(true);
 	}
 
 	const nextClicked = () => {
-		toggle_results_panel(false)
+		const new_ind = current_dataset_ind + 1;
+
+		set_current_dataset_ind(new_ind);
+		change_dataset(generated_datasets[history[new_ind]]);
+
+		update_slope_guess(0);
+		update_y_int_guess(50);
+
+		toggle_results_panel(false);
 	}
 
 	const resetClicked = () => {
 		update_slope_guess(0)
 		update_y_int_guess(0)
 	}
+
 
 	return (
 		<>
@@ -96,18 +110,18 @@ export default function ReguessionGame() {
 					padding={{ xs: "0.5em", md: "2%" }}
 					width={{ xs: "100%", md: "60%" }}
 				>
-					<Paper sx={{
+					<ContainerPaper sx={{
 						width: "25%",
-						marginBottom: "0.6em"
+						marginBottom: "0.6em",
+						textAlign: "center",
+						zIndex: 4
 					}}>
-						<Box
-							padding={"0.7em"}
-						>
-							swag
-						</Box>
-					</Paper>
+						<Typography variant="h3" >
+							{score}
+						</Typography>
+					</ContainerPaper>
 					<ReguessionChartContainer
-						dataset={current}
+						dataset={current_dataset}
 						regressions={[
 							{
 								reg_type: RegressionType.Guess,
@@ -146,7 +160,7 @@ export default function ReguessionGame() {
 							change_guess_slope={changeSlope}
 							change_guess_yint={changeYInt}
 							reset_clicked={resetClicked}
-							next_clicked={() => { }}
+							next_clicked={nextClicked}
 						/>
 					</Stack>
 				</Stack>
