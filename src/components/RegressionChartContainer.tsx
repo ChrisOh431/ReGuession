@@ -29,7 +29,7 @@ type SortingChartContainerProps = {
 	regressions?: Regression<RegressionType>[];
 };
 
-const ContainerPaper = styled(Paper)(({ theme }) => ({
+export const ContainerPaper = styled(Paper)(({ theme }) => ({
 	height: "fit-content",
 	width: "80%",
 	position: "relative",
@@ -43,7 +43,7 @@ const chart_options: ChartOptions = {
 	animation: false,
 	responsive: true,
 	layout: {
-		padding: 5,
+		padding: 0,
 	},
 	plugins: {
 		tooltip: {
@@ -54,13 +54,13 @@ const chart_options: ChartOptions = {
 	scales: {
 		yAxes: {
 			display: false,
-			min: -5,
-			max: 105,
+			min: 0,
+			max: 100,
 		},
 		xAxes: {
 			display: false,
-			min: -5,
-			max: 105,
+			min: 0,
+			max: 50,
 		},
 	},
 };
