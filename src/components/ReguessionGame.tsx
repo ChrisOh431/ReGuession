@@ -103,6 +103,21 @@ export default function ReguessionGame() {
 		update_y_int_guess(0)
 	}
 
+	const regressions = [{
+		reg_type: RegressionType.Guess,
+		slope: slope_guess,
+		y_int: y_int_guess,
+	}];
+
+	if (results_panel_vis)
+	{
+		regressions.push({
+			reg_type: RegressionType.Answer,
+			slope: current_dataset.coeff,
+			y_int: current_dataset.y_int
+		});
+	}
+
 
 	return (
 		<>
@@ -131,18 +146,7 @@ export default function ReguessionGame() {
 					</ContainerPaper>
 					<ReguessionChartContainer
 						dataset={current_dataset}
-						regressions={[
-							{
-								reg_type: RegressionType.Guess,
-								slope: slope_guess,
-								y_int: y_int_guess,
-							},
-							{
-								reg_type: RegressionType.Answer,
-								slope: current_dataset.coeff,
-								y_int: current_dataset.y_int
-							}
-						]}
+						regressions={regressions}
 					/>
 				</Box>
 				<Stack
