@@ -58,9 +58,18 @@ export default function ReguessionGame() {
 
 	const addToScore = (amount: number) => {
 		const currentAmount = parseInt(score);
-		const newAmount = `${currentAmount + amount}`.padStart(5, '0');
+		const newAmount = currentAmount + amount;
 
-		changescore(newAmount);
+		let newScore = "";
+
+		if (newAmount < 0)
+		{
+			newScore += '-';
+		}
+
+		newScore += `${Math.abs(newAmount)}`.padStart(5, '0');
+
+		changescore(newScore);
 	}
 
 	const guessClicked = (reg_a: Regression<RegressionType>, reg_b: Regression<RegressionType>) => {
