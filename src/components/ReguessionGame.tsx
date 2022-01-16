@@ -118,7 +118,6 @@ export default function ReguessionGame() {
 		});
 	}
 
-
 	return (
 		<>
 			<TallStack
@@ -136,9 +135,9 @@ export default function ReguessionGame() {
 				>
 					<ContainerPaper sx={{
 						width: "25%",
+						padding: "1%",
 						marginBottom: "0.6em",
 						textAlign: "center",
-						zIndex: 4
 					}}>
 						<Typography variant="h3" >
 							{score}
