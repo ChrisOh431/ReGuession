@@ -30,7 +30,7 @@ export default function SidePanel({ answer, guess, change_guess_slope, change_gu
     }
 
     return (
-        <GuessInputPanel answer={answer} guess={guess} change_guess_slope={change_guess_slope} change_guess_yint={change_guess_yint} guessClicked={guessClicked} reset_clicked={reset_clicked}/>
+        <GuessInputPanel answer={answer} guess={guess} change_guess_slope={change_guess_slope} change_guess_yint={change_guess_yint} guessClicked={guessClicked} reset_clicked={reset_clicked} />
     );
 };
 
@@ -83,6 +83,35 @@ function GuessInputPanel({ answer, guess, change_guess_slope, change_guess_yint,
     );
 }
 
+type RegressionStatsProps = {
+    title: string,
+    color: string,
+    slope: number,
+    yint: number,
+    rsq: number,
+}
+const RegressionStats = ({ title, color, rsq, slope, yint }: RegressionStatsProps) => {
+    return (
+        <Stack
+            justifyContent={"center"}
+            alignItems={"center"}
+        >
+            <Typography variant="h3" color={color}>
+                {title}
+            </Typography>
+            <Typography variant="h5">
+                Slope: {slope}
+            </Typography>
+            <Typography variant="h5">
+                yint: {yint}
+            </Typography>
+
+            <Typography fontSize={"2em"}>
+                <var>R<sup>2</sup></var>: {rsq}
+            </Typography>
+        </Stack>
+    );
+}
 
 type ResultsPanelParams = {
     results: RegressionComparison,
@@ -101,40 +130,8 @@ function ResultsPanel({ results, nextClicked }: ResultsPanelParams) {
                 justifyContent={"space-around"}
                 alignItems={"center"}
             >
-                <Stack
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                >
-                    <Typography variant="h3" color={"#454bee"}>
-                        Guess
-                    </Typography>
-                    <Typography variant="h5">
-                        slpe: {results.reg_a.slope}
-                    </Typography>
-                    <Typography variant="h5">
-                        yint: {results.reg_a.y_int}
-                    </Typography>
-
-                    <Typography fontSize={"2em"}>
-                        <var>R<sup>2</sup></var>: {results.rsq_reg_a}
-                    </Typography>
-                </Stack>
-
-                <Stack>
-                    <Typography variant="h3" color={"#61F416"}>
-                        Target
-                    </Typography>
-                    <Typography variant="h5">
-                        slpe: {results.dataset.coeff}
-                    </Typography>
-                    <Typography variant="h5">
-                        yint: {results.dataset.y_int}
-                    </Typography>
-
-                    <Typography fontSize={"2em"}>
-                        <var>R<sup>2</sup></var>: {results.rsq_reg_b}
-                    </Typography>
-                </Stack>
+                <RegressionStats title="Guess" color={"#454bee"} slope={results.reg_a.slope} yint={results.reg_a.y_int} rsq={results.rsq_reg_a} />
+                <RegressionStats title="Target" color={"#61F416"} slope={results.dataset.coeff} yint={results.dataset.y_int} rsq={results.rsq_reg_b} />
             </Stack>
             <Divider sx={{ margin: "2.5%" }} />
             <Stack
