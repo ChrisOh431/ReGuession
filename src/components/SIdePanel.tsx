@@ -3,6 +3,11 @@ import { Regression, RegressionComparison, RegressionType } from "../scripts/reg
 import { round } from "mathjs";
 import { ContainerPaper } from "./RegressionChartContainer";
 
+// icons
+import CheckIcon from '@mui/icons-material/Check';
+import ReplayIcon from '@mui/icons-material/Replay';
+
+
 type SidePanelParams = {
     guess: Regression<RegressionType.Guess>,
     answer: Regression<RegressionType.Answer>,
@@ -25,7 +30,7 @@ export default function SidePanel({ answer, guess, change_guess_slope, change_gu
     }
 
     return (
-        <GuessInputPanel answer={answer} guess={guess} change_guess_slope={change_guess_slope} change_guess_yint={change_guess_yint} guessClicked={guessClicked} />
+        <GuessInputPanel answer={answer} guess={guess} change_guess_slope={change_guess_slope} change_guess_yint={change_guess_yint} guessClicked={guessClicked} reset_clicked={reset_clicked}/>
     );
 };
 
@@ -45,23 +50,34 @@ function GuessInputPanel({ answer, guess, change_guess_slope, change_guess_yint,
         }}>
             <Stack
                 direction={"column"}
-                justifyContent={"center"}
-                alignItems={"center"}>
-                <Typography variant="h5">
-                    slpe: {round(guess.slope, 2)}
+            >
+                <Typography id="non-linear-slider-slope" fontSize={"1.5em"}>
+                    Slope: {round(guess.slope, 2)}
                 </Typography>
-                <Typography variant="h5">
-                    yint: {round(guess.y_int, 2)}
+                <Slider value={guess.slope} min={-10} max={10} step={0.01} onChange={change_guess_slope}
+                    aria-labelledby="non-linear-slider-slope" sx={{ marginBottom: "0.75em" }} />
+
+                <Typography id="non-linear-slider-yint" fontSize={"1.5em"}>
+                    Y-Intercept: {round(guess.y_int, 2)}
                 </Typography>
+                <Slider value={guess.y_int} color="primary" min={0} max={100} step={0.01} onChange={change_guess_yint}
+                    aria-labelledby="non-linear-slider-yint" />
 
-                <Slider value={guess.slope} min={-10} max={10} step={0.01} onChange={change_guess_slope} sx={{ marginTop: "24px" }} />
-                <Slider value={guess.y_int} min={0} max={100} step={0.01} onChange={change_guess_yint} sx={{ marginTop: "12px" }} />
+                <Divider sx={{ margin: "2.5%" }} />
 
-                <Button variant="contained" sx={{ marginTop: "24px" }} onClick={() => {
-                    let regression_guess: Regression<RegressionType.Guess> = { reg_type: RegressionType.Guess, slope: guess.slope, y_int: guess.y_int };
-                    let regression_answer: Regression<RegressionType.Answer> = { reg_type: RegressionType.Answer, slope: answer.slope, y_int: answer.y_int };
-                    guessClicked(regression_guess, regression_answer);
-                }}>Guess!</Button>
+                <Stack direction={"row"}
+                    justifyContent={"space-evenly"}
+                >
+                    <Button variant="contained" color={"error"} size="large" sx={{ width: "20%" }} onClick={() => {
+                        reset_clicked?.()
+                    }}><ReplayIcon /></Button>
+
+                    <Button variant="contained" color="success" size="large" sx={{ width: "75%" }} onClick={() => {
+                        let regression_guess: Regression<RegressionType.Guess> = { reg_type: RegressionType.Guess, slope: guess.slope, y_int: guess.y_int };
+                        let regression_answer: Regression<RegressionType.Answer> = { reg_type: RegressionType.Answer, slope: answer.slope, y_int: answer.y_int };
+                        guessClicked(regression_guess, regression_answer);
+                    }}><CheckIcon /></Button>
+                </Stack>
             </Stack>
         </ContainerPaper>
     );
@@ -75,19 +91,19 @@ type ResultsPanelParams = {
 function ResultsPanel({ results, nextClicked }: ResultsPanelParams) {
     const addamount = round((results.rsq_reg_a / results.rsq_reg_b) * 1000);
     return (
-        <Paper variant="outlined" 
-        sx={{
-            width: "100%",
-            padding: "5%"
-        }}>
+        <Paper variant="outlined"
+            sx={{
+                width: "100%",
+                padding: "5%"
+            }}>
             <Stack
                 direction={"row"}
                 justifyContent={"space-around"}
                 alignItems={"center"}
             >
                 <Stack
-                justifyContent={"center"}
-                alignItems={"center"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
                 >
                     <Typography variant="h3" color={"#454bee"}>
                         Guess
@@ -120,16 +136,16 @@ function ResultsPanel({ results, nextClicked }: ResultsPanelParams) {
                     </Typography>
                 </Stack>
             </Stack>
-            <Divider sx={{ margin: "2.5%"}}/>
+            <Divider sx={{ margin: "2.5%" }} />
             <Stack
                 direction={"row"}
                 alignItems={"center"}
                 justifyContent={"space-evenly"}
             >
                 <Stack
-                direction={"column"}
-                alignItems={"center"}
-                justifyContent={"center"}
+                    direction={"column"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
                 >
                     <Typography fontSize={"2em"} color={addamount >= 0 ? "green" : "red"}>
                         Points: {addamount >= 0 ? "+" : ""}{addamount}
