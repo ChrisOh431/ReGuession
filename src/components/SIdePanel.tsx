@@ -1,6 +1,7 @@
-import { Paper, Stack, Typography, Slider, Button } from "@mui/material";
+import { Paper, Stack, Typography, Slider, Button, Divider } from "@mui/material";
 import { Regression, RegressionComparison, RegressionType } from "../scripts/regressiondata";
 import { round } from "mathjs";
+import { ContainerPaper } from "./RegressionChartContainer";
 
 type SidePanelParams = {
     guess: Regression<RegressionType.Guess>,
@@ -38,7 +39,7 @@ type GuessPanelParams = {
 }
 function GuessInputPanel({ answer, guess, change_guess_slope, change_guess_yint, guessClicked, reset_clicked }: GuessPanelParams) {
     return (
-        <Paper variant="outlined" sx={{
+        <ContainerPaper variant="outlined" sx={{
             width: "100%",
             padding: "5%"
         }}>
@@ -62,7 +63,7 @@ function GuessInputPanel({ answer, guess, change_guess_slope, change_guess_yint,
                     guessClicked(regression_guess, regression_answer);
                 }}>Guess!</Button>
             </Stack>
-        </Paper>
+        </ContainerPaper>
     );
 }
 
@@ -74,37 +75,68 @@ type ResultsPanelParams = {
 function ResultsPanel({ results, nextClicked }: ResultsPanelParams) {
     const addamount = round((results.rsq_reg_a / results.rsq_reg_b) * 1000);
     return (
-        <Paper variant="outlined" sx={{
+        <Paper variant="outlined" 
+        sx={{
             width: "100%",
             padding: "5%"
         }}>
             <Stack
-                direction={"column"}
+                direction={"row"}
+                justifyContent={"space-around"}
+                alignItems={"center"}
+            >
+                <Stack
                 justifyContent={"center"}
-                alignItems={"center"}>
-                <Typography variant="h3" color={"#454bee88"}>
-                    Guess
-                </Typography>
-                <Typography variant="h5">
-                    slpe: {results.reg_a.slope}
-                </Typography>
-                <Typography variant="h5">
-                    yint: {results.reg_a.y_int}
-                </Typography>
-                <Typography variant="h3" color={"#61F41688"}>
-                    Target
-                </Typography>
-                <Typography variant="h5">
-                    slpe: {results.dataset.coeff}
-                </Typography>
-                <Typography variant="h5">
-                    yint: {results.dataset.y_int}
-                </Typography>
-                <Typography variant="h3">
-                    pad: {addamount}
-                </Typography>
+                alignItems={"center"}
+                >
+                    <Typography variant="h3" color={"#454bee"}>
+                        Guess
+                    </Typography>
+                    <Typography variant="h5">
+                        slpe: {results.reg_a.slope}
+                    </Typography>
+                    <Typography variant="h5">
+                        yint: {results.reg_a.y_int}
+                    </Typography>
 
-                <Button variant="contained" sx={{ marginTop: "12px" }} onClick={() => {
+                    <Typography fontSize={"2em"}>
+                        <var>R<sup>2</sup></var>: {results.rsq_reg_a}
+                    </Typography>
+                </Stack>
+
+                <Stack>
+                    <Typography variant="h3" color={"#61F416"}>
+                        Target
+                    </Typography>
+                    <Typography variant="h5">
+                        slpe: {results.dataset.coeff}
+                    </Typography>
+                    <Typography variant="h5">
+                        yint: {results.dataset.y_int}
+                    </Typography>
+
+                    <Typography fontSize={"2em"}>
+                        <var>R<sup>2</sup></var>: {results.rsq_reg_b}
+                    </Typography>
+                </Stack>
+            </Stack>
+            <Divider sx={{ margin: "2.5%"}}/>
+            <Stack
+                direction={"row"}
+                alignItems={"center"}
+                justifyContent={"space-evenly"}
+            >
+                <Stack
+                direction={"column"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                >
+                    <Typography fontSize={"2em"} color={addamount >= 0 ? "green" : "red"}>
+                        Points: {addamount >= 0 ? "+" : ""}{addamount}
+                    </Typography>
+                </Stack>
+
+                <Button variant="contained" size="large" onClick={() => {
                     nextClicked();
                 }}>Next</Button>
             </Stack>
