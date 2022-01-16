@@ -17,9 +17,9 @@ export const ScorePanel = ({ score }: ScorePanelProps) => {
     }
 
     return (
-        <ContainerPaper sx={{
+        <ContainerPaper elevation={0} sx={{
             width: "25%",
-            padding: "1% 0% 0% 0%",
+            padding: "2% 10%",
             marginBottom: "0.6em",
             textAlign: "center",
         }}>

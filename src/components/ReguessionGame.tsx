@@ -132,8 +132,6 @@ export default function ReguessionGame() {
 					padding={{ xs: "0.5em", md: "2%" }}
 					width={{ xs: "100%", md: "60%" }}
 				>
-					<ScorePanel score={score} />
-
 					<ReguessionChartContainer
 						dataset={current_dataset}
 						regressions={regressions}
@@ -154,6 +152,8 @@ export default function ReguessionGame() {
 						marginTop={{ xs: "2%" }}
 						spacing={{ xs: 2, md: 2 }}
 					>
+						<ScorePanel score={score} />
+
 						<SidePanel
 							answer={answer_reg}
 							guess={{ reg_type: RegressionType.Guess, slope: slope_guess, y_int: y_int_guess }}
