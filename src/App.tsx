@@ -9,7 +9,7 @@ const preTheme = {
   palette: {
     type: 'light',
     primary: {
-      main: '#3f51b5',
+      main: '#454bee',
     },
     secondary: {
       main: '#f50057',
