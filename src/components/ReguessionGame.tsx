@@ -18,6 +18,7 @@ import { Box, Button, Paper, Slider, Stack, Typography } from "@mui/material";
 import { padding, textAlign } from "@mui/system";
 import SidePanel from "./SIdePanel";
 import { compare, round } from "mathjs";
+import { ScorePanel } from "./ScorePanel";
 
 const TallStack = styled(Stack)(({ theme }) => ({
 	height: "100vh",
@@ -62,8 +63,7 @@ export default function ReguessionGame() {
 
 		let newScore = "";
 
-		if (newAmount < 0)
-		{
+		if (newAmount < 0) {
 			newScore += '-';
 		}
 
@@ -76,10 +76,10 @@ export default function ReguessionGame() {
 		const results = compare_regressions(current_dataset, reg_a, reg_b);
 
 		console.dir(results);
-		
-		const addamount = round((results.rsq_reg_a / results.rsq_reg_b)*1000);
+
+		const addamount = round((results.rsq_reg_a / results.rsq_reg_b) * 1000);
 		console.log(`Adding ${addamount} `);
-		
+
 		addToScore(addamount);
 		update_results(results);
 
@@ -99,8 +99,8 @@ export default function ReguessionGame() {
 	}
 
 	const resetClicked = () => {
-		update_slope_guess(0)
-		update_y_int_guess(0)
+		update_slope_guess(0);
+		update_y_int_guess(50);
 	}
 
 	const regressions = [{
@@ -109,8 +109,7 @@ export default function ReguessionGame() {
 		y_int: y_int_guess,
 	}];
 
-	if (results_panel_vis)
-	{
+	if (results_panel_vis) {
 		regressions.push({
 			reg_type: RegressionType.Answer,
 			slope: current_dataset.coeff,
@@ -133,16 +132,8 @@ export default function ReguessionGame() {
 					padding={{ xs: "0.5em", md: "2%" }}
 					width={{ xs: "100%", md: "60%" }}
 				>
-					<ContainerPaper sx={{
-						width: "25%",
-						padding: "1%",
-						marginBottom: "0.6em",
-						textAlign: "center",
-					}}>
-						<Typography variant="h3" >
-							{score}
-						</Typography>
-					</ContainerPaper>
+					<ScorePanel score={score} />
+
 					<ReguessionChartContainer
 						dataset={current_dataset}
 						regressions={regressions}
