@@ -25,38 +25,39 @@ const TallStack = styled(Stack)(({ theme }) => ({
 	backgroundColor: theme.palette.background.default,
 }));
 
-let history = generated_datasets.map(() =>
-	Math.floor(Math.random() * generated_datasets.length)
-);
+type ReguessionGameProps = {
+	history: number[];
+	datasets: RegressionDataset[];
+	openScoreDialog(score: number): void;
+}
 
-export default function ReguessionGame() {
-	const [dataset_history, set_dataset_history] =
-		React.useState<number[]>(history);
-
+export default function ReguessionGame({ datasets, history, openScoreDialog }: ReguessionGameProps) {
 	const [current_dataset_ind, set_current_dataset_ind] = React.useState<number>(0);
 	const [current_dataset, change_dataset] = React.useState<RegressionDataset>(
-		generated_datasets[history[current_dataset_ind]]
+		datasets[history[current_dataset_ind]]
 	);
-
-	let answer_reg: Regression<RegressionType.Answer> = { reg_type: RegressionType.Answer, slope: current_dataset.coeff, y_int: current_dataset.y_int }
 
 	const [slope_guess, update_slope_guess] = React.useState(0);
 	const [y_int_guess, update_y_int_guess] = React.useState(50);
 
 	const [results_panel_vis, toggle_results_panel] = React.useState(false);
 
+	let answer_reg: Regression<RegressionType.Answer> = { reg_type: RegressionType.Answer, slope: current_dataset.coeff, y_int: current_dataset.y_int }
 	const [results, update_results] = React.useState<RegressionComparison>(compare_regressions(current_dataset, { reg_type: RegressionType.Guess, slope: slope_guess, y_int: y_int_guess }, answer_reg));
 
 	const [score, changescore] = React.useState("00000");
 
-	const changeSlope = (event: Event, newValue: number | number[]) => {
+	const changeGuessSlope = (event: Event, newValue: number | number[]) =>
 		update_slope_guess(newValue as number);
-	};
 
-	const changeYInt = (event: Event, newValue: number | number[]) => {
+	const changeGuessYInt = (event: Event, newValue: number | number[]) =>
 		update_y_int_guess(newValue as number);
-	};
 
+	/**
+	 * Converts the current score string to a number then adds the amount to it
+	 * @param {number} amount The amount of points to add to the score
+	 * @returns Nothing, but it updates state.
+	 */
 	const addToScore = (amount: number) => {
 		const currentAmount = parseInt(score);
 		const newAmount = currentAmount + amount;
@@ -75,10 +76,8 @@ export default function ReguessionGame() {
 	const guessClicked = (reg_a: Regression<RegressionType>, reg_b: Regression<RegressionType>) => {
 		const results = compare_regressions(current_dataset, reg_a, reg_b);
 
-		console.dir(results);
-
+		// the score added is just the guess rsq/target rsq
 		const addamount = round((results.rsq_reg_a / results.rsq_reg_b) * 1000);
-		console.log(`Adding ${addamount} `);
 
 		addToScore(addamount);
 		update_results(results);
@@ -98,17 +97,22 @@ export default function ReguessionGame() {
 		toggle_results_panel(false);
 	}
 
+	/**
+	 * resets user guess to default.
+	 */
 	const resetClicked = () => {
 		update_slope_guess(0);
 		update_y_int_guess(50);
 	}
 
+	// regression set building
 	const regressions = [{
 		reg_type: RegressionType.Guess,
 		slope: slope_guess,
 		y_int: y_int_guess,
 	}];
 
+	// post-guess
 	if (results_panel_vis) {
 		regressions.push({
 			reg_type: RegressionType.Answer,
