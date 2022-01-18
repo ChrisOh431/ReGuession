@@ -45,19 +45,19 @@ type GuessPanelParams = {
 function GuessInputPanel({ answer, guess, change_guess_slope, change_guess_yint, guessClicked, reset_clicked }: GuessPanelParams) {
     return (
         <ContainerPaper variant="outlined" sx={{
-            width: "100%",
+            width: "80%",
             padding: "5%"
         }}>
             <Stack
                 direction={"column"}
             >
-                <Typography id="non-linear-slider-slope" fontSize={"1.5em"}>
+                <Typography id="non-linear-slider-slope" fontSize={"1.25rem"}>
                     Slope: {round(guess.slope, 2)}
                 </Typography>
                 <Slider value={guess.slope} min={-10} max={10} step={0.01} onChange={change_guess_slope}
                     aria-labelledby="non-linear-slider-slope" sx={{ marginBottom: "0.75em" }} />
 
-                <Typography id="non-linear-slider-yint" fontSize={"1.5em"}>
+                <Typography id="non-linear-slider-yint" fontSize={"1.25rem"}>
                     Y-Intercept: {round(guess.y_int, 2)}
                 </Typography>
                 <Slider value={guess.y_int} color="primary" min={0} max={100} step={0.01} onChange={change_guess_yint}
@@ -96,17 +96,17 @@ const RegressionStats = ({ title, color, rsq, slope, yint }: RegressionStatsProp
             justifyContent={"center"}
             alignItems={"center"}
         >
-            <Typography variant="h3" color={color}>
+            <Typography variant="h5" fontSize={"2rem"} color={color}>
                 {title}
             </Typography>
-            <Typography variant="h5">
+            <Typography variant="h5" fontSize={"1.35rem"}>
                 Slope: {slope}
             </Typography>
-            <Typography variant="h5">
+            <Typography variant="h5" fontSize={"1.35rem"}>
                 yint: {yint}
             </Typography>
 
-            <Typography fontSize={"2em"}>
+            <Typography fontSize={"1.5rem"}>
                 <var>R<sup>2</sup></var>: {rsq}
             </Typography>
         </Stack>
@@ -122,7 +122,7 @@ function ResultsPanel({ results, nextClicked }: ResultsPanelParams) {
     return (
         <Paper variant="outlined"
             sx={{
-                width: "100%",
+                width: "80%",
                 padding: "5%"
             }}>
             <Stack
@@ -144,7 +144,7 @@ function ResultsPanel({ results, nextClicked }: ResultsPanelParams) {
                     alignItems={"center"}
                     justifyContent={"center"}
                 >
-                    <Typography fontSize={"2em"} color={addamount >= 0 ? "green" : "red"}>
+                    <Typography fontSize={"1.5rem"} color={addamount >= 0 ? "green" : "red"}>
                         Points: {addamount >= 0 ? "+" : ""}{addamount}
                     </Typography>
                 </Stack>
