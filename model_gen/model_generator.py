@@ -32,12 +32,15 @@ class ReguessionDataset:
 
     def add_y_int(self):
         yint = randint(0, 50)
-        self.y += np.array(self.y)+yint
+        for i in range(len(self.y)):
+            self.y[i] += yint
 
     def make_negative(self):
         self.y = [y_coord for y_coord in np.interp(self.y, (min(self.y), max(self.y)), (50, 0))]
 
     def finalize_reg(self):
+        self.remove_extr()
+
         self.x = np.array(self.x)
         self.y = np.array(self.y)
 
@@ -61,14 +64,15 @@ class ReguessionDataset:
     def remove_extr(self):
         # every regression included 0.0 and 100.0
         y_min = min(self.y)
-        x_of_y_min = self.y.index(y_min)
-        self.x.pop(x_of_y_min)
-        self.y.remove(y_min)
-    
+        x_of_y_min = np.where(self.y == y_min)[0][0]
+        self.x = np.delete(self.x, x_of_y_min)
+        self.y = np.delete(self.y, x_of_y_min)
+
         y_max = max(self.y)
-        x_of_y_max = self.y.index(y_max)
-        self.x.pop(x_of_y_max)
-        self.y.remove(y_max)   
+        maxinds = np.where(self.y == y_max)[0]
+        x_of_y_max = np.where(self.y == y_max)[0][len(maxinds)-1]
+        self.x = np.delete(self.x, x_of_y_max)
+        self.y = np.delete(self.y, x_of_y_max)
 
 """
 test_dataset = ReguessionDataset([0, 2, 4], [1, 4, 4])
@@ -106,9 +110,8 @@ class RegressionManager():
             new_set = ReguessionDataset.generate(samplesize, noise, i)
 
             # coinflips to keep data interesting
+            new_set.add_y_int()
 
-            if (choice([True, True])):
-                new_set.add_y_int()
 
             if (choice([True, False])):
                 new_set.make_negative()
@@ -118,10 +121,11 @@ class RegressionManager():
     def write(self, location):
         outdata = []
         with open(location, "w") as datasetfile:
-            for dataset in self.datasets:
+            for ind, dataset in enumerate(self.datasets):
                 dataset.finalize_reg()
 
                 jsondata = {
+                    "name": ind,
                     "x_vals": dataset.x.tolist(),
                     "y_vals": dataset.y.tolist(),
                     "coeff": round(dataset.slope, 2),
@@ -132,7 +136,7 @@ class RegressionManager():
 
             json.dump(outdata, datasetfile, indent=4)
     
-manager = RegressionManager(25, 80, randint(30,55))
+manager = RegressionManager(30, 30, randint(30,35))
 manager.write("../src/reguessiondatasets.json")
 
 # gen testing, for dataset conformity
