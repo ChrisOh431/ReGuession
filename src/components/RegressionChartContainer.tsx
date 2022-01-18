@@ -88,6 +88,10 @@ export default function SortingChartContainer({
 	const scatter_set = {
 		type: "scatter" as const,
 		label: "points",
+		pointBackgroundColor: "#2895f1FF",
+		pointBorderColor: "#2895f188",
+		borderWidth: 1,
+		pointRadius: 3.5,
 		data: paired_coords,
 	};
 
@@ -121,7 +125,7 @@ export default function SortingChartContainer({
 	};
 
 	return (
-		<ContainerPaper elevation={2} sx={{}}>
+		<ContainerPaper elevation={2}>
 			<Chart type="scatter" data={full_set} options={chart_options} />
 		</ContainerPaper>
 	);
