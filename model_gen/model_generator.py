@@ -78,7 +78,26 @@ test_dataset.finalize_reg()
 print("test results: ", test_dataset.slope, test_dataset.y_int)
 """
 
+
 class RegressionManager():
+    """
+    Generates sets of regressions.
+    
+    Attributes
+    ----------
+    setcount : int
+        the number of datasets to generate
+    samplesize : str
+        number of datapoints per dataset
+    noise : int
+        "randomness" of the datasets
+
+    Methods
+    -------
+    write(location):
+        Writes a JSON-formatted text document containing the regression with a RegressionDataset schema.
+    """
+
     def __init__(self, setcount, samplesize, noise):
         self.datasets = []
         self.seeds = range(setcount)
