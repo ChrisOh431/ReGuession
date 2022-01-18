@@ -118,18 +118,18 @@ export default function ReguessionGame() {
 	}
 
 	return (
-		<>
 			<TallStack
 				direction={{ xs: "column", md: "row" }}
 				alignContent="flex-start"
 				spacing={{ xs: 0, md: 0 }}
+			py={{ xs: "2rem", md: 0 }}
 			>
 				<Box
 					display="flex"
 					flexDirection={"column"}
 					justifyContent="center"
 					alignItems={"center"}
-					padding={{ xs: "0.5em", md: "2%" }}
+				padding={{ md: "2%" }}
 					width={{ xs: "100%", md: "60%" }}
 				>
 					<ReguessionChartContainer
@@ -160,14 +160,13 @@ export default function ReguessionGame() {
 							results={results}
 							results_panel_vis={results_panel_vis}
 							guessClicked={guessClicked}
-							change_guess_slope={changeSlope}
-							change_guess_yint={changeYInt}
+						change_guess_slope={changeGuessSlope}
+						change_guess_yint={changeGuessYInt}
 							reset_clicked={resetClicked}
 							next_clicked={nextClicked}
 						/>
 					</Stack>
 				</Stack>
 			</TallStack>
-		</>
 	);
 }
