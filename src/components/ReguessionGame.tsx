@@ -125,6 +125,7 @@ export default function ReguessionGame({ openScoreDialog }: ReguessionGameProps)
 			change_dataset(RegressionSet[newHist[0]]);
 
 			openScoreDialog(score, round(tot_rsq / history.length, 3));
+			resetScoreandRsq();
 			return;
 		}
 
