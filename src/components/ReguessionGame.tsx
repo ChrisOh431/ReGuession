@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import ReguessionChartContainer, { ContainerPaper } from "./RegressionChartContainer";
 
@@ -7,7 +7,8 @@ import {
 	RegressionDataset,
 	RegressionType,
 	compare_regressions,
-	RegressionComparison
+	RegressionComparison,
+	RegressionSet
 } from "../scripts/regressiondata";
 
 import regressions from "../reguessiondatasets.json";
@@ -25,15 +26,21 @@ const TallStack = styled(Stack)(({ theme }) => ({
 }));
 
 type ReguessionGameProps = {
-	history: number[];
-	datasets: RegressionDataset[];
-	openScoreDialog(score: number): void;
+	openScoreDialog(score: string, averageRsq: number): void;
 }
 
-export default function ReguessionGame({ datasets, history, openScoreDialog }: ReguessionGameProps) {
+const setLength = 8;
+
+let hist = RegressionSet.map(() =>
+	Math.floor(Math.random() * RegressionSet.length)
+).slice(0, setLength);
+
+export default function ReguessionGame({ openScoreDialog }: ReguessionGameProps) {
+	// list of datasets played
+	const [history, setHistory] = React.useState(hist);
 	const [current_dataset_ind, set_current_dataset_ind] = React.useState<number>(0);
 	const [current_dataset, change_dataset] = React.useState<RegressionDataset>(
-		datasets[history[current_dataset_ind]]
+		RegressionSet[history[current_dataset_ind]]
 	);
 
 	const [slope_guess, update_slope_guess] = React.useState(0);
@@ -44,7 +51,8 @@ export default function ReguessionGame({ datasets, history, openScoreDialog }: R
 	let answer_reg: Regression<RegressionType.Answer> = { reg_type: RegressionType.Answer, slope: current_dataset.coeff, y_int: current_dataset.y_int }
 	const [results, update_results] = React.useState<RegressionComparison>(compare_regressions(current_dataset, { reg_type: RegressionType.Guess, slope: slope_guess, y_int: y_int_guess }, answer_reg));
 
-	const [score, changescore] = React.useState("00000");
+	const [score, change_score] = React.useState("00000");
+	const [tot_rsq, update_tot_rsq] = React.useState(0);
 
 	const changeGuessSlope = (event: Event, newValue: number | number[]) =>
 		update_slope_guess(newValue as number);
@@ -52,6 +60,15 @@ export default function ReguessionGame({ datasets, history, openScoreDialog }: R
 	const changeGuessYInt = (event: Event, newValue: number | number[]) =>
 		update_y_int_guess(newValue as number);
 
+	const resetInputs = () => {
+		update_slope_guess(0);
+		update_y_int_guess(50);
+	}
+
+	const resetScoreandRsq = () => {
+		change_score("00000");
+		update_tot_rsq(0);
+	}
 	/**
 	 * Converts the current score string to a number then adds the amount to it
 	 * @param {number} amount The amount of points to add to the score
@@ -69,7 +86,7 @@ export default function ReguessionGame({ datasets, history, openScoreDialog }: R
 
 		newScore += `${Math.abs(newAmount)}`.padStart(5, '0');
 
-		changescore(newScore);
+		change_score(newScore);
 	}
 
 	const guessClicked = (reg_a: Regression<RegressionType>, reg_b: Regression<RegressionType>) => {
@@ -78,28 +95,43 @@ export default function ReguessionGame({ datasets, history, openScoreDialog }: R
 		// the score added is just the guess rsq/target rsq
 		const addamount = round((results.rsq_reg_a / results.rsq_reg_b) * 1000);
 
+		const currentrsq = tot_rsq;
+		update_tot_rsq(currentrsq + results.rsq_reg_a);
 		addToScore(addamount);
 		update_results(results);
 
 		toggle_results_panel(true);
 	}
 
-	const nextClicked = () => {
+	/**
+	 * Increments the dataset index until the end is reached, after which a new list of indices is generated 
+	 */
+	 const nextClicked = () => {
 		const new_ind = current_dataset_ind + 1;
 
 		if (new_ind >= history.length) {
 			// postgame screen
-			const finalScore = parseInt(score);
+			resetInputs();
 
-			openScoreDialog(finalScore);
+			toggle_results_panel(false);
+
+			// generate and set new history
+			let newHist = RegressionSet.map(() =>
+				Math.floor(Math.random() * RegressionSet.length)
+			).slice(0, setLength);
+			setHistory(newHist);
+
+			set_current_dataset_ind(0);
+			change_dataset(RegressionSet[newHist[0]]);
+
+			openScoreDialog(score, round(tot_rsq / history.length, 3));
 			return;
 		}
 
 		set_current_dataset_ind(new_ind);
-		change_dataset(datasets[history[new_ind]]);
+		change_dataset(RegressionSet[history[new_ind]]);
 
-		update_slope_guess(0);
-		update_y_int_guess(50);
+		resetInputs();
 
 		toggle_results_panel(false);
 	}
@@ -108,8 +140,7 @@ export default function ReguessionGame({ datasets, history, openScoreDialog }: R
 	 * resets user guess to default.
 	 */
 	const resetClicked = () => {
-		update_slope_guess(0);
-		update_y_int_guess(50);
+		resetInputs();
 	}
 
 	// regression set building
