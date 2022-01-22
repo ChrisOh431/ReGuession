@@ -1,24 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 
-import ReguessionChartContainer, { ContainerPaper } from "./RegressionChartContainer";
+import { Box, Stack, styled } from "@mui/material";
+
+import { round } from "mathjs";
 
 import {
-	Regression,
-	RegressionDataset,
-	RegressionType,
-	compare_regressions,
-	RegressionComparison,
-	RegressionSet
+	compare_regressions, Regression, RegressionComparison, RegressionDataset, RegressionSet, RegressionType
 } from "../scripts/regressiondata";
 
-import regressions from "../reguessiondatasets.json";
-
-import { styled } from "@mui/material/styles";
-import { Box, Button, Paper, Slider, Stack, Typography } from "@mui/material";
-import { padding, textAlign } from "@mui/system";
-import SidePanel from "./SIdePanel";
-import { compare, round } from "mathjs";
+import ReguessionChartContainer from "./RegressionChartContainer";
 import { ScorePanel } from "./ScorePanel";
+import SidePanel from "./SIdePanel";
+
 
 const TallStack = styled(Stack)(({ theme }) => ({
 	height: "100vh",
@@ -106,7 +99,7 @@ export default function ReguessionGame({ openScoreDialog }: ReguessionGameProps)
 	/**
 	 * Increments the dataset index until the end is reached, after which a new list of indices is generated 
 	 */
-	 const nextClicked = () => {
+	const nextClicked = () => {
 		const new_ind = current_dataset_ind + 1;
 
 		if (new_ind >= history.length) {

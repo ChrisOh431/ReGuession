@@ -1,14 +1,13 @@
 import React from 'react';
 
-import logo from './logo.svg';
-import './App.css';
-import ReguessionGame from './components/ReguessionGame';
-import { ThemeProvider } from '@emotion/react';
-import { Box, createTheme, ModalUnstyled, styled, Typography } from '@mui/material';
-import { ContainerPaper } from './components/RegressionChartContainer';
+import { createTheme, ThemeProvider } from '@mui/material';
+
 import { GreetingModal } from './components/GreetingModal';
-import { RegressionSet } from './scripts/regressiondata';
+import ReguessionGame from './components/ReguessionGame';
 import { EndScorePanel } from './components/ScorePanel';
+
+import './App.css';
+
 
 const preTheme = {
 	palette: {

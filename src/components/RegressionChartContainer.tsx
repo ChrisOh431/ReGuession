@@ -1,25 +1,15 @@
 import React from "react";
-import {
-	Chart as ChartJS,
-	LinearScale,
-	PointElement,
-	LineElement,
-	Tooltip,
-	Legend,
-	ChartOptions,
-	ChartData,
-	CoreChartOptions,
-} from "chart.js";
-
-import { Chart } from "react-chartjs-2";
 
 import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
+import { styled } from "@mui/material";
 
 import {
-	RegressionDataset,
-	Regression,
-	RegressionType,
+	Chart as ChartJS, ChartOptions, Legend, LinearScale, LineElement, PointElement, Tooltip
+} from "chart.js";
+import { Chart } from "react-chartjs-2";
+
+import {
+	Regression, RegressionDataset, RegressionType
 } from "../scripts/regressiondata";
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
@@ -65,11 +55,7 @@ const chart_options: ChartOptions = {
 	},
 };
 
-type Colormap = {
-	[key in RegressionType]: string;
-};
-
-let colormap: { [key: number]: string } = {};
+let colormap: {[key in RegressionType]?: string;} = {}
 colormap[RegressionType.Guess] = "#454bee88";
 colormap[RegressionType.Answer] = "#61F41688";
 
@@ -99,11 +85,10 @@ export default function SortingChartContainer({
 
 	// regressions
 	if (regressions) {
-		for (const regression of regressions)
-		{
+		for (const regression of regressions) {
 			let color = colormap[regression.reg_type];
 			let linear_pair: [{ x: number; y: number }, { x: number; y: number }];
-			linear_pair = [{x: 0, y: regression.y_int}, {x: 100, y: 100*regression.slope+regression.y_int}];
+			linear_pair = [{ x: 0, y: regression.y_int }, { x: 100, y: 100 * regression.slope + regression.y_int }];
 
 			const linear_set = {
 				type: "line" as const,
