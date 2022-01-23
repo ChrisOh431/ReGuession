@@ -4,7 +4,7 @@ import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material";
 
 import {
-	Chart as ChartJS, ChartOptions, Legend, LinearScale, LineElement, PointElement, Tooltip, CategoryScale
+	Chart as ChartJS, ChartOptions, Legend, LinearScale, LineElement, PointElement, Tooltip, CategoryScale, ScatterController
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 
@@ -12,7 +12,7 @@ import {
 	Regression, RegressionDataset, RegressionType
 } from "../scripts/regressiondata";
 
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, CategoryScale);
+ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, CategoryScale, ScatterController);
 
 type SortingChartContainerProps = {
 	dataset: RegressionDataset;
