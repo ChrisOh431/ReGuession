@@ -1,8 +1,13 @@
+import os
 import json
 import numpy as np
 from sklearn import datasets
 from random import randint, choice, random, sample
 import matplotlib.pyplot as plt
+
+dirname = os.path.dirname(__file__)
+filename = os.path.join(dirname, '../src/reguessiondatasets.json')
+
 # rewrite to make dataset gen end to end in py, including correcting answer 
 
 class ReguessionDataset:
@@ -137,7 +142,7 @@ class RegressionManager():
             json.dump(outdata, datasetfile, indent=4)
     
 manager = RegressionManager(30, 30, randint(30,35))
-manager.write("../src/reguessiondatasets.json")
+manager.write(filename)
 
 # gen testing, for dataset conformity
 

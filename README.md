@@ -11,7 +11,7 @@ Lovingly assembled using (in no particular order) [React,](https://reactjs.org/)
 ## Installation
 
 Standard procedure. Clone the repo to your environment,
-then run
+then run:
 
 ```$
 cd reguession
@@ -20,7 +20,16 @@ npm install
 
 npm start
 ```
+Reguession will be live at `localhost:3000`
 
-Game will be live at `localhost:3000`
+
+## Dataset Regeneration
+
+If you wish to generate new datasets for the game, make sure you have numpy, scikit-learn, and matplotlib installed, then run:
+
+```$
+python3 model_gen/model_generator.py
+```
+
 
 
