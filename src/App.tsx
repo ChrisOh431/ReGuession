@@ -6,8 +6,6 @@ import { GreetingModal } from './components/GreetingModal';
 import ReguessionGame from './components/ReguessionGame';
 import { EndScorePanel } from './components/ScorePanel';
 
-import './App.css';
-
 
 const preTheme = {
 	palette: {
