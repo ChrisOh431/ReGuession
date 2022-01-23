@@ -2,6 +2,8 @@
 
 ![logo](/public/android-chrome-192x192.png)
 
+[Live Deployment](https://reguession.netlify.app) hosted on Netlify.
+
 Fun 'lil inear statistics-centered minigame based around guessing as close as possible to a linear regression for a dataset.
 
 ## Installation
